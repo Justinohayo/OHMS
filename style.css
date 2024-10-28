@@ -27,10 +27,15 @@ body{
 
 .login {
     float: right; 
-
 }
-head {
-    padding-bottom: 15px; 
+header {
+    padding: 15px 16px; 
+    overflow: hidden; 
+    position: center; 
+}
+
+footer{
+    
 }
 
 
