@@ -82,6 +82,8 @@ button:hover
     padding: 16px;
 }
 
+/* login page */
+
 form 
 {
     border: 1px solid black; 
@@ -119,7 +121,6 @@ button:hover
     opacity: .7;
 }
 
-
 #form_login
 {
 	display: table-cell;
@@ -135,5 +136,19 @@ button:hover
 	
 	
 }
+/*login page end*/
+
+/*flex container for home page content*/
+
+flexcontainer{
+    display: flex;
+    flex-direction: row; 
+    flex-wrap: wrap;  
+}
+
+flex-item{
+
+}
+
 
 
