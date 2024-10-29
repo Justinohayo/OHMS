@@ -1,5 +1,9 @@
 .welcome {
-    color:aquamarine
+    color: black;
+    display:block; 
+    background-color: whitesmoke;
+    margin-top: 10px; 
+    padding: 10px; 
 } 
 
 body{
@@ -29,10 +33,11 @@ body{
     float: right; 
 }
 
-header {
-    padding: 15px 16px; 
+.header {
+    padding: 5px 5px; 
     overflow: hidden; 
-    position: center; 
+    display: block;
+    text-align: center;
 }
 
 footer{
