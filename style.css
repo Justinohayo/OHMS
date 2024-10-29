@@ -82,5 +82,58 @@ button:hover
     padding: 16px;
 }
 
+form 
+{
+    border: 1px solid black; 
+	width: 50%;
+	margin:auto;
+	vertical-align: middle;
+	padding: 10px;
+	
+}
+
+input[ type=text], input [type=password] 
+{
+ width: 100%;
+ padding: 12px 20px;
+margin: 8px 0;
+display: inline-block;
+border: 1px white;
+box-sizing:border-box;
+
+}
+
+button
+{
+background-color: #04aa6d;
+color: white;
+padding: 14px 20px;
+margin: 8px 0;
+border: none;
+cursor: pointer;
+width: 100%;
+}
+
+button:hover
+{
+    opacity: .7;
+}
+
+
+#form_login
+{
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+}
+.containerlogin
+{
+	display: flex;
+	justify-content :center;
+	align-items: center;
+	min-height: 100vh;
+	
+	
+}
 
 
