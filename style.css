@@ -13,7 +13,7 @@ body{
 .topnav{
     overflow: hidden; 
     background-color:aliceblue;
-}
+} /*the menu bar content*/
 
 .topnav a{
     float: left;
@@ -21,18 +21,36 @@ body{
     color:darkolivegreen;
     padding: 14px 16px; 
     text-decoration: none; 
-}
+}/* the menu box */
 
 .topnav a:hover {
     background-color:aquamarine;
     color: #ddd;
     color: black; 
-}
+}/* menu hover effect*/
 
 .login {
     float: right; 
-}
+} /*login on menu bar */
 
+.flexcontainer{
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 20px; 
+    justify-content: center;
+} /* for home page content*/
+
+.flexitem {
+    flex: 1 1 200px; 
+    border: 1px solid #ccc; 
+    border-radius: 8px;
+    padding: 20px;
+    background-color: antiquewhite;  
+    text-align: center; 
+}
+h4 {
+    
+}
 .header {
     padding: 5px 5px; 
     overflow: hidden; 
@@ -43,6 +61,7 @@ body{
 footer{
     
 }
+
 
 form 
 {
