@@ -32,7 +32,6 @@ body{
     background-color:aquamarine;
     color: #ddd;
     color: black; 
-    transform: scale(1,02);
     box-shadow: 0px 2px 4px rgba(0,128,128,0,2);
 }/* menu hover effect*/
 
