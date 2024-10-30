@@ -169,9 +169,10 @@ button:hover
 /* AboutUs page */
 .box  
 {
-    border: 2px solid darkolivegreen; 
-    border-radius: 10px; 
-    padding: 30px; 
+    border: 1px solid #ccc; 
+    border-radius: 50px;
+    padding: 20px; 
+    
     background-color: antiquewhite; 
     margin-bottom: 20px
 
@@ -184,6 +185,9 @@ button:hover
     gap: 40px;                          /* format of the staff and doctors sections */
     justify-content: center;
     flex-wrap: wrap;
+   
+
+  
 }
 
 .person_item 
