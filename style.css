@@ -13,7 +13,7 @@ body{
 .topnav{
     overflow: hidden; 
     background-color:aliceblue;
-}
+} /*the menu bar content*/
 
 .topnav a{
     float: left;
@@ -21,17 +21,24 @@ body{
     color:darkolivegreen;
     padding: 14px 16px; 
     text-decoration: none; 
-}
+}/* the menu box */
 
 .topnav a:hover {
     background-color:aquamarine;
     color: #ddd;
     color: black; 
-}
+}/* menu hover effect*/
 
 .login {
     float: right; 
-}
+} /*login on menu bar */
+
+.flexcontainer{
+    display: flex; 
+    flex-wrap: wrap; 
+} /* for home page content*/
+
+
 
 .header {
     padding: 5px 5px; 
@@ -43,6 +50,7 @@ body{
 footer{
     
 }
+
 
 form 
 {
