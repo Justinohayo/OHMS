@@ -34,16 +34,19 @@ body{
 } /*login on menu bar */
 
 .flexcontainer{
+    margin-top: 10px;
     display: flex; 
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
     gap: 20px; 
     justify-content: center;
+
 } /* for home page content*/
 
 .flexitem {
-    flex: 1 1 200px; 
+    flex: 1 0 20%; 
+    max-width: 30%;
     border: 1px solid #ccc; 
-    border-radius: 8px;
+    border-radius: 50px;
     padding: 20px;
     background-color: antiquewhite;  
     text-align: center; 
