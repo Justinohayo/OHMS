@@ -158,11 +158,13 @@ button:hover
 }
 
 /* AboutUs page */
-.AchvHistoryAboutUs  
+.box  
 {
- display: flex;                   /* for the paragraph section */
- color:  white;
- font-style: italic;
+    border: 2px solid #4CAF50; 
+    border-radius: 10px; 
+    padding: 30px; 
+    background-color: #f9f9f9; 
+    margin-bottom: 20px
 
 }
 
@@ -197,7 +199,7 @@ button:hover
 .Title 
 {
     text-align: center;
-    font-size: large;
+    font-size: 12px;
 }
 .para 
 {
@@ -206,4 +208,8 @@ button:hover
     line-height: 1.6; 
     padding-left: 100px;
     padding-right: 100px;
+}
+.containerAboutUs
+{
+    padding: 20px;
 }
