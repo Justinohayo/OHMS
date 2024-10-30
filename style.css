@@ -10,14 +10,14 @@ body{
     background-color: #50c7c7; 
 }
 
-.topnav{
+nav{
     overflow: hidden; 
     background-color:aliceblue;
     border-radius: 8px;
     font-family: Arial, sans-serif;
 } /*the menu bar content*/
 
-.topnav a{
+nav a{
     float: left;
     display: block;
     color:darkolivegreen;
@@ -28,7 +28,7 @@ body{
     border-radius: 4px; 
 }/* the menu box */
 
-.topnav a:hover {
+nav a:hover {
     background-color:aquamarine;
     color: #ddd;
     color: black; 
@@ -60,7 +60,7 @@ body{
     box-shadow: 5px 5px 8px rgba(0,0,0,0.2);
 }
 
-.header {
+header {
     padding: 5px 5px; 
     overflow: hidden; 
     display: block;
