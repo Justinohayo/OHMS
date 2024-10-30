@@ -136,46 +136,54 @@ button:hover
 	
 	
 }
-.AchvHistoryAboutUs
+
+/* AboutUs page */
+.AchvHistoryAboutUs  
 {
- display: flex;
+ display: flex;                   /* for the paragraph section */
  color:  white;
  font-style: italic;
+
 }
-.doctors/staffAboutUs
+
+
+.person_list 
 {
     display: flex;
-    background-color: #F5F5F5;
-    border: 1px solid #DDDDDD;
-    border-radius: 4px 0 4px 0;
-    color: #3B3C3E;
-    font-size: 12px;
-    font-weight: bold;
-    left: -1px;
-    padding: 10px 7px 5px;
-    height:120px;
-    overflow:scroll;
-    overflow-x:hidden;
+    gap: 40px;                          /* format of the staff and doctors sections */
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
-.scroll-container {
-    width: 300px;
-    height: 400px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 10px;
-    scrollbar-width: thin;
-  }
+.person_item 
+{
+    text-align: center;                /* alignment of each name */
+    max-width: 200px; 
+}
 
-  /* Custom scrollbar styling for Webkit browsers */
-  .scroll-container::-webkit-scrollbar {
-    width: 10px;
-  }
-  
-  .scroll-container::-webkit-scrollbar-thumb:hover {
-    background-color: #555;
-  }
+.person_item img 
+{
+    width: 100%;                        /* format of each img */
+    height: 200px; 
+    object-fit: cover; 
+    border-radius: 0; 
+}
 
-
-
+.person_name 
+{
+    font-weight: bold;                        
+    margin-top: 10px;
+}
+.Title 
+{
+    text-align: center;
+    font-size: large;
+}
+.para 
+{
+    text-align: center;
+    margin: 20px 0; 
+    line-height: 1.6; 
+    padding-left: 100px;
+    padding-right: 100px;
+}
