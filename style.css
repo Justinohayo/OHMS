@@ -36,10 +36,21 @@ body{
 .flexcontainer{
     display: flex; 
     flex-wrap: wrap; 
+    gap: 20px; 
+    justify-content: center;
 } /* for home page content*/
 
-
-
+.flexitem {
+    flex: 1 1 200px; 
+    border: 1px solid #ccc; 
+    border-radius: 8px;
+    padding: 20px;
+    background-color: antiquewhite;  
+    text-align: center; 
+}
+h4 {
+    
+}
 .header {
     padding: 5px 5px; 
     overflow: hidden; 
