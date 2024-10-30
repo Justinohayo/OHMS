@@ -136,5 +136,46 @@ button:hover
 	
 	
 }
+.AchvHistoryAboutUs
+{
+ display: flex;
+ color:  white;
+ font-style: italic;
+}
+.doctors/staffAboutUs
+{
+    display: flex;
+    background-color: #F5F5F5;
+    border: 1px solid #DDDDDD;
+    border-radius: 4px 0 4px 0;
+    color: #3B3C3E;
+    font-size: 12px;
+    font-weight: bold;
+    left: -1px;
+    padding: 10px 7px 5px;
+    height:120px;
+    overflow:scroll;
+    overflow-x:hidden;
+}
+
+.scroll-container {
+    width: 300px;
+    height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    scrollbar-width: thin;
+  }
+
+  /* Custom scrollbar styling for Webkit browsers */
+  .scroll-container::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  .scroll-container::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+  }
+
 
 
