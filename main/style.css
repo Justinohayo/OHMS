@@ -8,6 +8,8 @@
 
 body{
     background-color: #50c7c7; 
+    margin: 0;
+    padding: 0; 
 }
 
 nav{
@@ -15,6 +17,7 @@ nav{
     background-color:aliceblue;
     border-radius: 8px;
     font-family: Arial, sans-serif;
+    height: 51px;
 } /*the menu bar content*/
 
 nav a{
@@ -60,15 +63,22 @@ nav a:hover {
     box-shadow: 5px 5px 8px rgba(0,0,0,0.2);
 }
 
-header {
-    padding: 5px 5px; 
-    overflow: hidden; 
-    display: block;
-    text-align: center;
+header{
+    padding-top: 40px;
+    padding-bottom: 10px; 
+}
+
+h1{
+    text-decoration: none;
+    text-align: center; 
+
 }
 
 footer{
-    
+    text-align: center;
+    padding: 20px;
+    background-color: #0077b6;
+    color: white;
 }
 
 
