@@ -261,26 +261,4 @@ button:hover
     text-align: center; 
     box-shadow: 5px 5px 8px rgba(0,0,0,0.2);
 }
-.flexitemTest:hover {
-    background-color: rgb(175, 243, 220);
-    color: black;
-}
 
-.flexitemTest:hover h4, .flexitemTest:hover p 
-{
-    color: black;
-}
-.bookButton {
-    margin-top: 10px;
-    padding: 8px 16px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.bookButton:hover {
-    background-color: #0056b3;
-}
