@@ -17,7 +17,7 @@ nav{
     background-color:aliceblue;
     border-radius: 8px;
     font-family: Arial, sans-serif;
-    height: 51px;
+    padding: 9px;
 } /*the menu bar content*/
 
 nav a{
@@ -29,6 +29,7 @@ nav a{
     font-weight: bold; 
     transition: background-color 0,3s, color 0,3s;
     border-radius: 4px; 
+    cursor: pointer;
 }/* the menu box */
 
 nav a:hover {
