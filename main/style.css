@@ -9,7 +9,7 @@
 body{
     background-color: #50c7c7; 
     margin: 0;
-    padding: 0; 
+    padding-bottom: 50px; 
 }
 
 nav{
@@ -18,8 +18,13 @@ nav{
     border-radius: 8px;
     font-family: Arial, sans-serif;
     padding: 9px;
+    text-align: center;
+    
 } /*the menu bar content*/
 
+main {
+    padding-bottom: 50px;
+}/* whole the main content*/
 nav a{
     float: left;
     display: block;
