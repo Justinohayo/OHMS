@@ -12,9 +12,10 @@ body
 
     background-color: #50c7c7;
     align-items: center;
-    min-height: 100vh;
     display: flex; 
     flex-direction: column; 
+
+   
 }
 
 
@@ -24,6 +25,8 @@ main
     padding-bottom: 50px;
     margin: 0;
     padding-top: 0;  
+    
+    align-items: center;
 }/* whole the main content*/
 
 header 
@@ -37,7 +40,6 @@ header
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center; 
-    border-bottom: 
 }
 
 
@@ -52,6 +54,7 @@ nav
     justify-content: space-around;
     align-items: center;
     margin: 15px;
+    width: 100vh; 
 }
 
 nav a
@@ -71,7 +74,7 @@ nav span
     position: absolute;
     top: 0;
     left: 0;
-    width: 100px;
+    width: 150px;
     height: 100%;
     background: linear-gradient(45deg, #dad616, #33b3d0);
     border-radius: 8px;
@@ -85,24 +88,20 @@ nav a:nth-child(1):hover ~ span
     left: 0;
 }
 
-nav a:nth-child(2):hover ~ span 
-{
-    left: 125px;
+nav a:nth-child(2):hover ~ span {
+    left: 155px;
 }
 
-nav a:nth-child(3):hover ~ span
- {
-    left: 255px;
+nav a:nth-child(3):hover ~ span {
+    left: 315px;
 }
 
-nav a:nth-child(4):hover ~ span 
-{
-    left: 380px;
+nav a:nth-child(4):hover ~ span {
+    left: 480px;
 }
 
-nav a:nth-child(5):hover ~ span 
-{
-    left: 500px;
+nav a:nth-child(5):hover ~ span {
+    left: 644px;
 }
 
 
@@ -120,7 +119,7 @@ nav a:nth-child(5):hover ~ span
     flex-direction: row;
     gap: 20px; 
     justify-content: center;
-    font-size: 12;
+    font-size: 14;
     width: 100vh;
 } /* for home page content*/
 
@@ -131,7 +130,7 @@ nav a:nth-child(5):hover ~ span
     border: 1px solid #ccc; 
     border-radius: 50px;
     padding: 20px;
-    background-color: antiquewhite;  
+    background-color: white;  
     text-align: center; 
     box-shadow: 5px 5px 8px rgba(0,0,0,0.2);
 }
@@ -153,6 +152,8 @@ footer
     background-color: #0077b6;
     color: white;
     margin-top: auto; 
+    width: 100vh; 
+   
 }
 
 
@@ -260,10 +261,9 @@ button:hover
 .box  
 {
     border: 1px solid #ccc; 
-    border-radius: 100px;
-    padding: 100px; 
-   
-    background-color: white; 
+    border-radius: 50px;
+    padding: 10px; 
+    background-color: antiquewhite; 
     margin-bottom: 20px
 
 }
