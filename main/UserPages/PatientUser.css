@@ -106,25 +106,29 @@ footer
 
 .profile-link 
 {
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    text-decoration: none; 
+    display: flex;
+    flex-direction: column; /* Stack the image and text vertically */
+    align-items: center; /* Center-align the image and text */
+    text-decoration: none;
+    color: #0077b6;
+    padding: 10px; 
 }
 
 .profile-image 
 {
-    height: 40px; 
-    width: auto; 
+    height: 40px;
+    width: 40px;
     border-radius: 50%; 
-    transition: transform 0.3s ease; 
+    transition: transform 0.3s ease;
+    margin-bottom: 5px;  
 }
-
 .profile-link:hover .profile-image 
 {
     transform: scale(1.1); 
 }
-
+.profile-link:hover {
+    color: #0077b6; 
+}
 
 .features-nav a 
 {
