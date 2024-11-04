@@ -258,17 +258,20 @@ button:hover
 }
 
 /* AboutUs page */
-.box
- {
+.box 
+{
     border: 1px solid #ccc; 
     border-radius: 50px;
     padding: 20px;
-    background-color: antiquewhite;
-    margin-bottom: 20px;
-    max-width: 80%; /* Set a maximum width for the boxes */
-    width: 100%; /* Ensures responsiveness */
+    background-color: white;
+    margin-bottom: 30px; /* Adjusted space between each box */
+    max-width: 50%;
+    width: 100%;
     margin-left: auto;
-    margin-right: auto; /* Centers each box */
+    margin-right: auto;
+    margin-top: 20px; /* Uniform margin on top and bottom */
+    margin-bottom: 20px;
+    
 }
 
 .person_list 
@@ -313,12 +316,10 @@ button:hover
     padding-right: 100px;
 }
 .containerAboutUs {
-    padding: 50px;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center-aligns all box elements */
+    align-items: center; /* Center all boxes */
 }
-
 /* services */
 .flexcontainerTest
 {
