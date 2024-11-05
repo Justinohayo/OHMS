@@ -261,7 +261,7 @@ button:hover
     border: 1px solid #ccc; 
     border-radius: 50px;
     padding: 20px;
-    background-color: white;
+    background-color: rgba(0, 180, 216, 0.8);
     margin-bottom: 30px; /* Adjusted space between each box */
     max-width: 50%;
     width: 100%;
