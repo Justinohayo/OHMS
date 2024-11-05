@@ -17,7 +17,6 @@ body
 }
 
 
-
 main 
 {
     padding-bottom: 50px;
@@ -101,7 +100,6 @@ nav a:nth-child(4):hover ~ span {
 nav a:nth-child(5):hover ~ span {
     left: 644px;
 }
-
 
 .login 
 {
@@ -224,6 +222,7 @@ box-sizing:border-box;
 button
 {
 background-color: #04aa6d;
+text-decoration: none;
 color: white;
 padding: 14px 20px;
 margin: 8px 0;
