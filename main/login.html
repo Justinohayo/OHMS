@@ -1,36 +1,36 @@
-<!DOCTYPE <html>
-<meta name = "viewport" content="width=device-width, initial-scale=1.0">
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css"> 
+    <title>OHMS</title>
+</head>
+
+<body>
     <header>
-        <link rel="stylesheet" href="style.css"> 
-        <title> OHMS </title>
-        <h1> <a href="index.html">Online Health Monitor System</a></h1>
-    
-
+        <h1><a href="index.html">Online Health Monitor System</a></h1>
     </header>
-    </head>
 
- <body>
-    
-    
-   <div class = "containerlogin">
-   <form action = "action_page.php" method="post">
-   
+    <div class="containerlogin">
+        <form id="loginForm" action="action_page.php" method="post">
+            <label for="uname"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="uname" id="uname" required>
 
-<label for "uname"> <b>Username</b></label>
-<input type = "text" placeholder = "Enter Username" name = "uname" required>
+            <label for="psw"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="upsw" id="psw" required>
 
-<label for "psw"> <b>Password</b></label>
-<input type = "text" placeholder = "Enter password" name = "upsw" required>
-<button type "submit"> login</button>
+            <label for="role"><b>Role:</b></label>
+            <select id="role" required>
+                <option value="staff">Staff</option>
+                <option value="patient">Patient</option>
+                <option value="doctor">Doctor</option>
+            </select>
 
-<button><a href = "register.html"> Register here </a></button>
+            <button type="submit">Login</button>
+            <button><a href="register.html">Register here</a></button>
+        </form>
+    </div>
 
-   </form> 
-  </div>
+    <script src="loginredirect.js"></script>
 </body>
-
-
-
 </html>
