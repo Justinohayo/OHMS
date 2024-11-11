@@ -2,35 +2,41 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="style2.css"> 
     <title>OHMS</title>
 </head>
 
 <body>
-    <header>
-        <h1><a href="index.html">Online Health Monitor System</a></h1>
-    </header>
 
     <div class="containerlogin">
-        <form id="loginForm" action="action_page.php" method="post">
-            <label for="uname"><b>Username</b></label>
-            <input type="text" placeholder="Enter Username" name="uname" id="uname" required>
+        <div class="box form-box">
 
-            <label for="psw"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="upsw" id="psw" required>
+            <header>Login</header>
+            <form action="" method="post">
+                <div class="field input">
+                <label for="username">Username</label>
+                <input type="text" placeholder="Enter Username" name="username" id="username" autocomplete="off" required>
+            </div>
+                <div class="field input">
+                <label>Password</label>
+                <input type="password" placeholder="Enter Password" name="password" id="password" autocomplete="off" required>
+           
+            </div>
+               
+            <div class="field">
+                <input type="submit" class="btn" name="submit" value="Login" required>
+            </div>
+            <div class="links">
+                Don't have account? <a href="register.html">Sign Up Now</a>
+            </div>
+            </form>
 
-            <label for="role"><b>Role:</b></label>
-            <select id="role" required>
-                <option value="staff">Staff</option>
-                <option value="patient">Patient</option>
-                <option value="doctor">Doctor</option>
-            </select>
 
-            <button type="submit">Login</button>
-            <button><a href="register.html">Register here</a></button>
-        </form>
+        </div>
+      
+   
     </div>
 
-    <script src="loginredirect.js"></script>
+
 </body>
 </html>
