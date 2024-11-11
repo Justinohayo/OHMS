@@ -352,10 +352,11 @@ footer{
     min-height: 280px; /* Minimum width for consistency */
     width: 100%; /* Ensures responsiveness */
     max-width: 500px; 
+    height: auto;
 }
 
 .form-box{
-    width: 500px;
+    width: 100%px;
     margin: 0px 10px;
 
 }
