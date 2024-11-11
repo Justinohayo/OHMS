@@ -152,7 +152,6 @@ footer{
 
 /*=============================ABOUT US=========================*/
 
-/* General container styling */
 .container-aboutus {
     display: flex; 
     flex-direction: column; 
@@ -164,7 +163,7 @@ footer{
     min-height: 100vh; 
 }
 
-/* Box styling for Company Achievements and History */
+
 .box {
     display: flex; 
     flex-direction: column;
@@ -332,4 +331,88 @@ footer{
 
 .contact-details p strong{
     color: #07629b; 
+}
+
+/*================================LOGIN===============================*/
+.containerlogin{
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    min-height: 90vh; 
+}
+
+.box{
+    background: #fdfdfd;
+    display: flex;
+    flex-direction: column; 
+    padding: 25px 25px; 
+    border-radius: 20px; 
+    box-shadow: 0 0 128px 0 rgba(0,0,0,0.1),
+                0 32px 64px -48px  rgba(0,0,0,0.5);
+    min-height: 280px; /* Minimum width for consistency */
+    width: 100%; /* Ensures responsiveness */
+    max-width: 500px; 
+}
+
+.form-box{
+    width: 500px;
+    margin: 0px 10px;
+
+}
+
+.form-box header{
+    font-size: 25px;
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e6e6e6;
+    margin-bottom: 10px;
+    background: none;
+}
+
+.form-box form .input input{
+    height: 40px; 
+    width: 100%;
+    font-size: 16px;
+    padding: 0 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none; 
+}
+
+.form-box form .field{
+    display: flex;
+    margin-bottom: 10px;
+    flex-direction: column; 
+
+}
+.btn{
+    height: 35px; 
+    background: rgba(78,68,182,0.808);    
+    border: 0; 
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer; 
+    transition: all ,3s;
+    margin-top: 10px;
+    padding: 0px 10px;
+}
+.btn:hover{
+    opacity: 0.82s;
+}
+.submit{
+    width: 100%;
+}
+.link{
+    margin-bottom: 15px; 
+}
+
+.form-box form .field label {
+    font-size: 12px; 
+    font-weight: 500;
+    color: #333; 
+    margin-bottom: 5px; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+    transition: all 0.3s ease; 
 }
