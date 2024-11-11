@@ -387,7 +387,7 @@ footer{
 }
 .btn{
     height: 35px; 
-    background: rgba(78,68,182,0.808);    
+    background:  rgba(11, 103, 122, 0.8);    
     border: 0; 
     border-radius: 5px;
     color: #fff;
@@ -397,12 +397,14 @@ footer{
     margin-top: 10px;
     padding: 0px 10px;
 }
+
 .btn:hover{
     opacity: 0.82s;
 }
 .submit{
     width: 100%;
 }
+
 .link{
     margin-bottom: 15px; 
 }
@@ -416,3 +418,9 @@ footer{
     letter-spacing: 1px; 
     transition: all 0.3s ease; 
 }
+
+.links a{
+    text-decoration: none;
+}
+
+/*=============================REGISTER PAGES======================*/
