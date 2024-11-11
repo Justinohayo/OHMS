@@ -1,62 +1,47 @@
-<!DOCTYPE <html>
-<meta name = "viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style2.css"> 
+    <title>OHMS</title>
+</head>
 
-<header>
-    <link rel="stylesheet" href="style.css"> 
-    <title> OHMS </title>
-    <p class = headerpicture></p>
-    <h1> <a href="index.html">Online Health Monitor System</a></h1>
- 
-</header>
+<body>
 
-<body> 
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="AboutUs.html">About Us</a>
-        <a href="Services.html">Services</a>
-        <a href="Contact.html">Contact</a>
-        <a href="login.html">Login</a> 
-          <span></span> 
-  </nav>
+    <div class="containerlogin">
+        <div class="box form-box">
 
- <body>
- 
-    
-    
+            <header>Sign Up</header>
+
+            <form action="" method="post">
+                <div class="field input">
+                <label for="username">Username</label>
+                <input type="text" placeholder="Enter Username" name="username" id="username" autocomplete="off" required>
+            </div>
+                <div class="field input">
+                <label>Password</label>
+                <input type="password" placeholder="Enter Password" name="password" id="password" autocomplete="off" required>
+           
+            </div>
+            <div class="field input">
+              <label>Email</label>
+              <input type="text" placeholder="Enter Your Email" name="email" id="email" autocomplete="off" required>
+          </div>
+               
+            <div class="field">
+                <input type="submit" class="btn" name="submit" value="Login" required>
+            </div>
+            <div class="links">
+                Don't have account? <a href="register.html">Sign Up Now</a>
+            </div>
+            </form>
 
 
-
-
-   <div class = "containerlogin">
-   <form action = "action_page.php" method="post">
+        </div>
+      
    
-
-<label for "uname"> <b>Username</b></label>
-<input type = "text" placeholder = "Enter Username" name = "uname" required>
-
-<label for "psw"> <b>Password</b></label>
-<input type = "text" placeholder = "Enter password" name = "upsw" required>
-
-<label for "FirstName"> <b>First Name</b></label>
-<input type = "text" placeholder = "Enter password" name = "upsw" required>
-<label for "LastName"> <b>Last Name</b></label>
-<input type = "text" placeholder = "Enter password" name = "upsw" required>
-<label for "email"> <b>Email</b></label>
-<input type = "text" placeholder = "Enter password" name = "upsw" required>
-<label for "phonenum"> <b>Phone Number</b></label>
-<input type = "text" placeholder = "Enter password" name = "upsw" required>
-<label for "DOB"> <b>Date of birth</b></label>
-<input type = "text" placeholder = "Enter password" name = "upsw" required>
-<label for "healthID"> <b>Health ID</b></label>
-<input type = "text" placeholder = "Enter password" name = "upsw" required>
+    </div>
 
 
-
-<button type "submit"> Register</button>
-   </form> 
-  </div>
 </body>
-
-
-
 </html>
