@@ -333,15 +333,116 @@ footer{
     color: #07629b; 
 }
 
-/*================================LOGIN===============================*/
-.containerlogin{
+/*=========================REGISTER PAGE=========================*/
+.containerregister {
     display: flex;
     align-items: center;
     justify-content: center; 
     min-height: 90vh; 
 }
 
-.box{
+.box {
+    background: #fdfdfd;
+    display: flex;
+    flex-direction: column; 
+    padding: 25px; 
+    border-radius: 20px; 
+    box-shadow: 0 0 128px 0 rgba(0,0,0,0.1),
+                0 32px 64px -48px rgba(0,0,0,0.5);
+    min-height: 280px; 
+    width: 100%;
+    max-width: 600px; 
+    height: auto;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.form-box {
+    display: flex; 
+    flex-direction: column;
+    width: 100%;
+}
+
+.form-box header {
+    font-size: 25px;
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e6e6e6;
+    margin-bottom: 10px;
+    background: none;
+}
+
+.form-box .field {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-box .field.full-width {
+    grid-column: 1/-1; 
+    display: flex; 
+    justify-content: center; 
+}
+
+.form-box .field label {
+    font-size: 12px; 
+    font-weight: 500;
+    color: #333; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+    transition: all 0.3s ease; 
+}
+
+.form-box .input input {
+    height: 40px; 
+    width: 100%;
+    font-size: 16px;
+    padding: 0 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none; 
+    margin-bottom: 5px;
+}
+
+.form-box .btn {
+    height: 35px; 
+    background: rgba(11, 103, 122, 0.8);    
+    border: 0; 
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer; 
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 200px; 
+    padding: 0px 10px;
+    text-align: center; 
+}
+
+.form-box .btn:hover {
+    opacity: 0.82;
+}
+
+.form-box .links {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.form-box .links a {
+    text-decoration: none;
+}
+
+/*=========================LOGIN PAGE=========================*/
+
+.containerlogin {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    min-height: 90vh; 
+}
+
+.box2 {
     background: #fdfdfd;
     display: flex;
     flex-direction: column; 
@@ -355,13 +456,12 @@ footer{
     height: auto;
 }
 
-.form-box{
-    width: 100%px;
+.form-box2 {
+    width: 100%;
     margin: 0px 10px;
-
 }
 
-.form-box header{
+.form-box2 header {
     font-size: 25px;
     font-weight: 600;
     padding-bottom: 10px;
@@ -370,7 +470,7 @@ footer{
     background: none;
 }
 
-.form-box form .input input{
+.form-box2 .input input {
     height: 40px; 
     width: 100%;
     font-size: 16px;
@@ -380,56 +480,67 @@ footer{
     outline: none; 
 }
 
-.form-box form .field{
+.form-box2 .field {
     display: flex;
     margin-bottom: 10px;
     flex-direction: column; 
-
-}
-.btn{
-    height: 35px; 
-    background:  rgba(11, 103, 122, 0.8);    
-    border: 0; 
-    border-radius: 5px;
-    color: #fff;
-    font-size: 15px;
-    cursor: pointer; 
-    transition: all ,3s;
-    margin-top: 10px;
-    padding: 0px 10px;
+    justify-content: center;
+    margin-bottom: 10px; 
 }
 
-.btn:hover{
-    opacity: 0.82s;
-}
-.submit{
-    width: 100%;
-}
-
-.link{
-    margin-bottom: 15px; 
-}
-
-.form-box form .field label {
+.form-box2 .field label {
     font-size: 12px; 
     font-weight: 500;
     color: #333; 
-    margin-bottom: 5px; 
     text-transform: uppercase; 
     letter-spacing: 1px; 
     transition: all 0.3s ease; 
 }
 
-.links a{
+.form-box2 .field input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.form-box2 .btn2 {
+    height: 35px; 
+    background: rgba(11, 103, 122, 0.8);    
+    border: 0; 
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer; 
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 200px; 
+    padding: 0px 10px;
+    text-align: center; 
+    margin: 0 auto;
+}
+
+.form-box2 .btn2:hover {
+    opacity: 0.82;
+}
+
+.form-box2 .links2 {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.form-box2 .links2 a {
     text-decoration: none;
 }
 
-/*=============================REGISTER PAGES======================*/
- /* use the same css style as the log in no need to make more class*/
-
-
-
  /*===============================PATIENT USERS PAGE=========================*/
-
+ .message{
+    text-align: center;
+    background: #f9eded;
+    padding: 15px 0px;
+    border: 1px solid #699053;
+    border-radius: 5px; 
+    color: red;
+}
 
  
