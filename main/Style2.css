@@ -533,8 +533,7 @@ footer{
     text-decoration: none;
 }
 
- /*===============================PATIENT USERS PAGE=========================*/
- .message{
+.message{
     text-align: center;
     background: #f9eded;
     padding: 15px 0px;
@@ -542,5 +541,12 @@ footer{
     border-radius: 5px; 
     color: red;
 }
+
+ 
+
+
+
+ 
+
 
  
