@@ -72,7 +72,7 @@ session_start();
                         $adminRow=mysqli_fetch_assoc($adminResult);
                         if(is_array($adminRow) && !empty($adminRow))
                         {
-                            header("Location: Admin.php");
+                            header("Location: admin.php");
                         }
                     }
                     else{
