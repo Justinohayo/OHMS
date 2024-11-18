@@ -7,9 +7,29 @@ function fetchtestresults() {
             if (data.error) {
                 testResultsDiv.innerHTML = `<p>Error: ${data.error}</p>`;
             } else {
-                let tableHTML = `<table class = "table"><tr><th>TestResultID</th><th>StaffID</th><th>PatientID</th><th>AssignedTestID</th><th>AssignedBloodTestID</th><th>Date Updated</th><th>Doctor Note</th><th>Result</th></tr>`;
+                let tableHTML = `<table class ="tablestyle">
+                <tr>
+                <th>TestResultID</th>
+                <th>StaffID</th>
+                <th>PatientID</th>
+                <th>AssignedTestID</th>
+                <th>AssignedBloodTestID</th>
+                <th>Date Updated</th>
+                <th>Doctor Note</th>
+                <th>Result</th>
+                </tr>`;
                 data.forEach(row => {
-                    tableHTML += `<tr><td>${row.TestResultID}</td><td>${row.StaffID}</td><td>${row.PatientID}</td><td>${row.AssignedTestID}</td><td>${row.AssignedBloodTestID}</td><td>${row.DateUpdated}</td><td>${row.DoctorNote}</td><td>${row.Result}</td></tr>`;
+                    tableHTML += 
+                    `<tr>
+                    <td>${row.TestResultID}</td>
+                    <td>${row.StaffID}</td>
+                    <td>${row.PatientID}</td>
+                    <td>${row.AssignedTestID}</td>
+                    <td>${row.AssignedBloodTestID}</td>
+                    <td>${row.DateUpdated}</td>
+                    <td>${row.DoctorNote}</td>
+                    <td>${row.Result}</td>
+                    </tr>`;
                 });
                 tableHTML += `</table>`;
                 testResultsDiv.innerHTML = tableHTML;
@@ -70,3 +90,15 @@ function showSection(sectionId)
 document.addEventListener('DOMContentLoaded', function () {
     showSection('home');
 })
+
+function showSection(sectionId){
+    const sections = document.querySelectorAll('.page-section');
+    sections.forEach(section =>
+        { section.style.display ='none';
+        });
+        document.getElementById(sectionId).style.display = 'block';
+    };
+
+   window.onload =function(){
+       showSection('home');
+    }; 
