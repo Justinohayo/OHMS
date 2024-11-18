@@ -37,12 +37,30 @@
           <!-- View Results Section-->
         <section id="ViewResults" class="page-section">
 
-         <form onsubmit="event.preventDefault();" role="search">
+         <form onsubmit="event.preventDefault();" role="search" method="GET">
             <label for="search"> Search Results</label>
-            <input id="search" type="search" placeholder="Search..." autofocus required>
+
+            <input id="search" type="search" <?php if(isset($_GET['search'])){echo $_POST['search'];} ?>placeholder="Search..." autofocus required>
             <button type="submit">Go</button>
          </form>
-        <div id="testresult"></div>
+
+
+
+        
+         <div id="testresult"></div>
+        <table class = "tablestyle">
+        <tr>
+                <th>TestResultID</th>
+                <th>StaffID</th>
+                <th>PatientID</th>
+                <th>AssignedTestID</th>
+                <th>AssignedBloodTestID</th>
+                <th>Date Updated</th>
+                <th>Doctor Note</th>
+                <th>Result</th>
+        </tr>
+
+        </table>
         </section>
 
 
@@ -74,31 +92,15 @@
         <!-- AdminProfile Section-->
         <section id="AdminProfile" class="page-section">
          
-        <div class="box">
-            
-
-        </div>
 
         </section>
 
+        
     </div>
 </main>
 
 
-<script src="fetchData.js">
-function showSection(sectionId){
-    const sections = document.querySelectorAll('.page-section');
-    sections.forEach(section =>
-        { section.style.display ='none';
-        });
-        document.getElementById(sectionId).style.display = 'block';
-    };
 
-   window.onload =function(){
-       showSection('home');
-    }; 
-
-</script>
 
     <footer>
         <p>&copy; 2024 OHMS</p>
