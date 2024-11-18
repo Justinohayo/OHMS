@@ -217,10 +217,26 @@ input, button {
    margin: 15px;
    border-radius: 50;
 
-
   }
 
-  .tablestyle td{
 
-  }
+
+ .table .tablestyle{
+   border-collapse: collapse;
+   width: 100%; 
+   margin: 20px 0; 
+   font-size: 18px; 
+   text-align: left;
+   background-color:  #f9f9f9;
+
+ }
+
+ .table th, .table td, .tablestyle th, .tablestyle td{
+
+   border: 1px solid #ddd;
+   padding: 8px;
+
+   
+
+ }
   
