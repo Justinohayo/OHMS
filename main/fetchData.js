@@ -7,7 +7,8 @@ function fetchtestresults() {
             if (data.error) {
                 testResultsDiv.innerHTML = `<p>Error: ${data.error}</p>`;
             } else {
-                let tableHTML = `<table class ="tablestyle">
+                let tableHTML = 
+                `<table class = "tablestyle">
                 <tr>
                 <th>TestResultID</th>
                 <th>StaffID</th>
