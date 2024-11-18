@@ -158,7 +158,9 @@ footer{
 /*search bar*/
 
 form{
-    margin-top: 10px; 
+   margin: 20px auto;
+   display: flex; 
+   align-items: center; 
     position: relative; 
     width: 20rem; 
     background: #57bd84; 
@@ -280,14 +282,6 @@ tbody{
          }
       }
    }
-}
-
-
-
-form{
-   margin: 20px auto; 
-   text-align: center; 
-
 }
 
 .tablecontainter table{
