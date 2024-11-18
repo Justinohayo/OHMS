@@ -6,6 +6,7 @@
      font-family: 'Times New Roman', Times, serif;
 }
 
+
 body{
     background-color: #50c7c7;
 }
@@ -57,7 +58,7 @@ nav
 }
 
 nav a
- {
+{
     position: relative;
     text-align: center;
     display: inline-block;
