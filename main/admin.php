@@ -130,6 +130,7 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                         echo "<tr><td colspan='4'>No Records Found</td></tr>";
                     }
                     ?>
+                    
                 </tbody>
             </table>
         </div>
