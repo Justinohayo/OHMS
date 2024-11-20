@@ -112,8 +112,12 @@
             
                 <div class="field">
                     <div class="input">
-                        <label>Gender</label>
-                        <input type="text" placeholder="Male/Female/Others" name="sex" id="sex" autocomplete="off" required>
+                        <label for="sex">Gender</label>
+                        <select name="sex" id="sex">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
                     </div>
 
                     <div class="input">
@@ -154,26 +158,6 @@
             </form>
         </div>
     </div>
-
-    <script>
-        document.getElementById('myform').addEventListener('submit', function(event) {
-     
-        const sexValue = document.getElementById('sex').value.trim();
-
-       
-        if (!sexValue) {
-            alert("Please enter a value for sex.");
-            event.preventDefault(); 
-            return;
-        }
-
-        const validValues = ['Male', 'male', 'Female', 'female','Others'];
-        if (!validValues.includes(sexValue)) {
-            alert("Please enter a valid sex: Male, Female, or Others.");
-            event.preventDefault();
-        }
-    });
-    </script>
      
 
 </body>
