@@ -148,17 +148,24 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                 <?php
         include("php/config.php");
 
-        function generateID($prefix) {
-            return $prefix . uniqid() . str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+        function generateID($prefix, $table, $column, $conn) {
+            do {
+                $id = $prefix . uniqid() . bin2hex(random_bytes(4));
+                $query = "SELECT $column FROM $table WHERE $column = '$id'";
+                $result = mysqli_query($conn, $query);
+            } while (mysqli_num_rows($result) > 0); // Keep generating until a unique ID is found
+            return $id;
         }
         
         if (isset($_POST['submit'])) {
-            $addressid = generateID('ADR_');
-            $contactid = generateID('CNT_');
-            $doctortid = generateID('DOC_');
-            $staffid = generateID('STF_');
-            $useraccountid = generateID('USR_');
+            // Generate IDs
+            $addressid = generateID('ADR_', 'address', 'AddressID', $conn);
+            $contactid = generateID('CNT_', 'contact', 'ContactID', $conn);
+            $doctorid = generateID('DOC_', 'doctor', 'DoctorID', $conn);
+            $staffid = generateID('STF_', 'staff', 'StaffID', $conn);
+            $useraccountid = generateID('USR_', 'useraccount', 'UserAccountID', $conn);
         
+            // Collect user input
             $username = $_POST["username"];
             $password = $_POST["password"];
             $firstname = $_POST["firstname"];
@@ -174,56 +181,55 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
             // Verify unique email
             $verify_query = mysqli_query($conn, "SELECT Email FROM Contact WHERE Email='$email'");
             if (mysqli_num_rows($verify_query) > 0) {
-                echo "<div class='message'>
-                        <p>This email is already in use by another user, try another one please!</p>
-                      </div><br>";
+                echo "<div class='message'><p>This email is already in use by another user, try another one please!</p></div><br>";
                 echo "<a href='javascript:self.history.back()'><button class='btn'>Go Back</button></a>";
             } else {
-         
+                // Begin transaction
                 mysqli_begin_transaction($conn);
         
                 try {
-                    $insert_query = "INSERT INTO UserAccount (UserAccountID, UserType, Username, Password, AccountStatus) 
-                                     VALUES ('$useraccountid', 'Patient', '$username', '$password', 'Approved')";
-                    if (!mysqli_query($conn, $insert_query)) {
+                    // Insert into UserAccount
+                    $insert_user = "INSERT INTO UserAccount (UserAccountID, UserType, Username, Password, AccountStatus) 
+                                    VALUES ('$useraccountid', '$usertype', '$username', '$password', 'Approved')";
+                    if (!mysqli_query($conn, $insert_user)) {
                         throw new Exception("User Account Insert Error: " . mysqli_error($conn));
                     }
         
-                    $insert_query3 = "INSERT INTO Contact (ContactID, Email) 
-                                        VALUES ('$contactid', '$email')";
-                    if (!mysqli_query($conn, $insert_query3)) {
+                    // Insert into Contact
+                    $insert_contact = "INSERT INTO Contact (ContactID, Email) 
+                                       VALUES ('$contactid', '$email')";
+                    if (!mysqli_query($conn, $insert_contact)) {
                         throw new Exception("Contact Insert Error: " . mysqli_error($conn));
                     }
-                    
-                    $insert_query4 = "INSERT INTO Address (AddressID, Street, City, PostalCode) 
-                                      VALUES ('$addressid', '$street', '$city', '$postalcode')";
-                    if (!mysqli_query($conn, $insert_query4)) {
+        
+                    // Insert into Address
+                    $insert_address = "INSERT INTO Address (AddressID, Street, City, PostalCode) 
+                                       VALUES ('$addressid', '$street', '$city', '$postalcode')";
+                    if (!mysqli_query($conn, $insert_address)) {
                         throw new Exception("Address Insert Error: " . mysqli_error($conn));
                     }
-                    
-                    if($usertype === 'Doctor')
-                    {
-                        $insert_query2 = "INSERT INTO doctor (DoctorID, Firstname, Lastname, DOB, Sex, AddressID, ContactID) 
-                                      VALUES ('$doctorid', '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
-                        if (!mysqli_query($conn, $insert_query2)) {
-                        throw new Exception("Doctor Insert Error: " . mysqli_error($conn));
-                    }
         
-                    }
-                    else
-                    {
-                        $insert_query5="INSERT INTO staff (StaffID, Firstname, Lastname, DOB, Sex, AddressID, ContactID)
-                                        VALUES ('$staffid','$firstname','$lastname','$dob','$sex','$addressid','$contactid')";
-                        if (!mysqli_query($conn, $insert_query5))
-                        {
+                    // Insert into Doctor or Staff 
+                    if ($usertype === 'Doctor') {
+                        $insert_doctor = "INSERT INTO doctor (DoctorID, Firstname, Lastname, DOB, Sex, AddressID, ContactID) 
+                                          VALUES ('$doctorid', '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
+                        if (!mysqli_query($conn, $insert_doctor)) {
+                            throw new Exception("Doctor Insert Error: " . mysqli_error($conn));
+                        }
+                    } else {
+                        $insert_staff = "INSERT INTO staff (StaffID, Firstname, Lastname, DOB, Sex, AddressID, ContactID)
+                                         VALUES ('$staffid', '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
+                        if (!mysqli_query($conn, $insert_staff)) {
                             throw new Exception("Staff Insert Error: " . mysqli_error($conn));
                         }
                     }
-                    
+        
+                    // Commit transaction
                     mysqli_commit($conn);
                     echo "<div class='message'><p>Registration successful!</p></div>";
         
                 } catch (Exception $e) {
+                    // Rollback transaction on error
                     mysqli_rollback($conn);
                     echo "<div class='message'><p>Registration failed: " . $e->getMessage() . "</p></div>";
                 }
