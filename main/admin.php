@@ -57,9 +57,9 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                         <?php
                         if (isset($_GET['search_results'])) {
                             $search = mysqli_real_escape_string($conn, $_GET['search_results']);
-                            $query = "SELECT * FROM test_results WHERE CONCAT(TestResultID, StaffID, PatientID, AssignedTestID, AssignedBloodTestID, DateUpdated, DoctorNote, Result) LIKE '%$search%'";
+                            $query = "SELECT * FROM testresult WHERE CONCAT(TestResultID, StaffID, PatientID, AssignedTestID, AssignedBloodTestID, DateUpdated, DoctorNote, Result) LIKE '%$search%'";
                         } else {
-                            $query = "SELECT * FROM test_results";
+                            $query = "SELECT * FROM testresult";
                         }
                         $result = mysqli_query($conn, $query);
 
@@ -133,13 +133,60 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
             <?php
             break;
 
-        case 'Reports':
-            ?>
-            <section id="Reports">
-                <p>Reports functionality coming soon.</p>
-            </section>
-            <?php
-            break;
+            case 'Reports':
+                include("PHP/report.php");
+                ?>
+                <section id="Reports">
+                    <h2>Reports</h2>
+                    <!-- General Report -->
+                    <div class="general-report">
+                        <h3>General Report</h3>
+                        <?php
+                        $general_report = generateGeneralReport($conn); 
+                        ?>
+                        <p>Total Patients Tested: <strong><?= $general_report['total_patients']; ?></strong></p>
+                        <p>Patients with Abnormal Status: <strong><?= $general_report['abnormal_patients']; ?></strong></p>
+                    </div>
+                    <!-- Yearly Report -->
+                    <div class="yearly-report">
+                        <h3>Yearly Report</h3>
+                        <form action="" method="GET">
+                            <input type="hidden" name="section" value="Reports">
+                            <label for="patient_id">Patient ID:</label>
+                            <input type="patientbar" class="patientbar" name="patient_id" id="patient_id" placeholder="Enter Patient ID" required>
+                            <button type="submit">Go</button>
+                        </form>
+                        <?php
+                        if (isset($_GET['patient_id']) && !empty($_GET['patient_id'])) {
+                            $patient_id = mysqli_real_escape_string($conn, $_GET['patient_id']);
+                            $yearly_report = generateYearlyReport($patient_id, $conn);
+            
+                            if (isset($yearly_report['error'])) {
+                                echo "<p>" . $yearly_report['error'] . "</p>";
+                            } else {
+                                $abnormal_rate = $yearly_report['abnormal_rate'];
+                                $prediction = $yearly_report['prediction'];
+                                $abnormal_tests = $yearly_report['abnormal_tests'];
+            
+                                echo "<p>Name of Patient: <strong>$patient_id</strong></p>";
+                                echo "<p>Abnormal Rate: <strong>$abnormal_rate%</strong></p>";
+                                echo "<p>Prediction: <strong>$prediction</strong></p>";
+            
+                                if (!empty($abnormal_tests)) {
+                                    echo "<h4>Abnormal Tests:</h4>";
+                                    echo "<ul>";
+                                    foreach ($abnormal_tests as $test) {
+                                        echo "<li>Test ID: {$test['TestResultID']}, Date: {$test['DateUpdated']}, Result: {$test['Result']}</li>";
+                                    }
+                                    echo "</ul>";
+                                }
+                            }
+                        }
+                        ?>
+                    </div>
+                </section>
+                <?php
+                break;            
 
         case 'CreateAccount':
             ?>
@@ -158,7 +205,7 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
         }
         
         if (isset($_POST['submit'])) {
-            // Generate IDs
+            // Generate unique IDs
             $addressid = generateID('ADR_', 'address', 'AddressID', $conn);
             $contactid = generateID('CNT_', 'contact', 'ContactID', $conn);
             $doctorid = generateID('DOC_', 'doctor', 'DoctorID', $conn);
