@@ -149,13 +149,14 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
         include("php/config.php");
 
         function generateID($prefix) {
-            return $prefix . str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+            return $prefix . uniqid() . str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
         }
         
         if (isset($_POST['submit'])) {
             $addressid = generateID('ADR_');
             $contactid = generateID('CNT_');
-            $patientid = generateID('PAT_');
+            $doctortid = generateID('DOC_');
+            $staffid = generateID('STF_');
             $useraccountid = generateID('USR_');
         
             $username = $_POST["username"];
@@ -193,19 +194,32 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                     if (!mysqli_query($conn, $insert_query3)) {
                         throw new Exception("Contact Insert Error: " . mysqli_error($conn));
                     }
-        
+                    
                     $insert_query4 = "INSERT INTO Address (AddressID, Street, City, PostalCode) 
                                       VALUES ('$addressid', '$street', '$city', '$postalcode')";
                     if (!mysqli_query($conn, $insert_query4)) {
                         throw new Exception("Address Insert Error: " . mysqli_error($conn));
                     }
-        
-                    $insert_query2 = "INSERT INTO Patient (PatientID, Firstname, Lastname, DOB, Sex, AddressID, ContactID) 
-                                      VALUES ('$patientid', '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
-                    if (!mysqli_query($conn, $insert_query2)) {
-                        throw new Exception("Patient Insert Error: " . mysqli_error($conn));
+                    
+                    if($usertype === 'Doctor')
+                    {
+                        $insert_query2 = "INSERT INTO doctor (DoctorID, Firstname, Lastname, DOB, Sex, AddressID, ContactID) 
+                                      VALUES ('$doctorid', '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
+                        if (!mysqli_query($conn, $insert_query2)) {
+                        throw new Exception("Doctor Insert Error: " . mysqli_error($conn));
                     }
         
+                    }
+                    else
+                    {
+                        $insert_query5="INSERT INTO staff (StaffID, Firstname, Lastname, DOB, Sex, AddressID, ContactID)
+                                        VALUES ('$staffid','$firstname','$lastname','$dob','$sex','$addressid','$contactid')";
+                        if (!mysqli_query($conn, $insert_query5))
+                        {
+                            throw new Exception("Staff Insert Error: " . mysqli_error($conn));
+                        }
+                    }
+                    
                     mysqli_commit($conn);
                     echo "<div class='message'><p>Registration successful!</p></div>";
         
@@ -250,8 +264,8 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
 
                 <div class="field">
                     <div class="input">
-                        <label for="gender">Gender</label>
-                        <select name="gender" id="gender">
+                        <label for="sex">Gender</label>
+                        <select name="sex" id="sex">
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                             <option value="Other">Other</option>
@@ -335,10 +349,6 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
     }
     ?>
 </main>
-
-<footer>
-    <p>&copy; 2024 OHMS</p>
-</footer>
 
 </body>
 </html>
