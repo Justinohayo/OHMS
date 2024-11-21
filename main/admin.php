@@ -167,6 +167,7 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                                 $abnormal_rate = $yearly_report['abnormal_rate'];
                                 $prediction = $yearly_report['prediction'];
                                 $abnormal_tests = $yearly_report['abnormal_tests'];
+                               
             
                                 echo "<p>Name of Patient: <strong>$patient_id</strong></p>";
                                 echo "<p>Abnormal Rate: <strong>$abnormal_rate%</strong></p>";
