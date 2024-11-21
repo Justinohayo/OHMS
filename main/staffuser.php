@@ -1,50 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
+    <?php
+    session_start(); 
+    ?>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="Patientuser.css">
+    <link rel="stylesheet" href="Style2.css">
     <title>OHMS - Online Health Monitor System</title>
 </head>
 
 <body>
-
     <header>
-        <h1>
-            <a href="/OHMS/main/index.html">Online Health Monitor System</a>
-        </h1>
-        
-        <nav class="main-nav">
-            <a href="C:\Users\satnam\OneDrive\Documents\GitHub\OHMS\main\index.html">Home</a>
-            <a href="main\AboutUs.html">About Us</a>
-            <a href="main\Services.html">Services</a>
-            <a href="main\Contact.html">Contact</a>
-            <a href="myProfile.html" class="login profile-link">
-                <img src="images\userpic.png" alt="My Profile" class="profile-image">
-            </a>
-        </nav>
+        <p><a  href="index.html" class = "logo">OHMS</a></p>
+        <nav class = user>
+        <a href ="#" onclick="showSection('home')">Home</a>
+         <a href="#" onclick="showSection('ViewResults')">View Results</a>
+         <a href="#" onclick="showSection('Appointments')">Appointments</a>
+         <a href="#" onclick="showSection('Prescription')">Prescription</a>
+         <a href="#" onclick="showSection('MyProfile')">My Profile</a>
+         <span></span>
+       </nav>
+
     </header>
 
-    <div class="container">
-        <aside class="sidebar">
-            <nav class="features-nav">
-                
-                <a href="viewResults.html">View Results</a>
-                <a href="appointments.html">Appointments</a>
-                <a href="prescriptionTest.html">Prescription Test</a>
-            </nav>
-        </aside>
+<main>
 
+    <div class="container">
         <main class="content">
-            <section>
-                <h2>Welcome to the Online Health Monitor System</h2>
+
+            <!-- Home Section-->
+            <section id="home" class="page-section">
+                <h2>Welcome Justin to the Online Health Monitor System</h2>
                 <p>Explore your health records, manage appointments, and connect with healthcare professionals easily.</p>
-                
             </section>
-        </main>
+
+          <!-- View Results Section-->
+          <section id="ViewResults" class="page-section">
+          <input type="text" placeholder="Search...">
+
+        </section>
+
+          <!-- Appointment Section-->
+          <section id="appointments" class="page-section">
+          <input type="text" placeholder="Search...">
+
+        </section>
+
+          <!-- Prescription Section-->
+          <section id="Prescription" class="page-section">
+          <input type="text" placeholder="Search...">
+           <table>
+
+           </table>
+        </section>
+
+          <!-- My Profile Section-->
+          <section id="MyProfile" class="page-section">
+            <p> First name: </p>
+            <p> Last name: </p>
+            <p> Date of Birth: </p>
+            <p> Email: </p>
+            <p> Phone Number: </p>
+        </section>
+
     </div>
+</main>
+
+<script>
+function showSection(sectionId){
+
+
+    const sections = document.querySelectorAll('.page-section');
+
+    sections.forEach(section =>
+        { section.style.display ='none';
+        });
+
+        document.getElementById(sectionId).style.display = 'block';
+
+    };
+
+    window.onload =function(){
+        showSection('home');
+    }; 
+
+
+</script>
 
     <footer>
-        <p>&copy; 2024 Online Health Monitor System</p>
+        <p>&copy; 2024 OHMS</p>
     </footer>
 
 </body>
