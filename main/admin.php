@@ -134,7 +134,6 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
             break;
 
             case 'Reports':
-                include("PHP/report.php");
                 ?>
                 <section id="Reports">
                     <h2>Reports</h2>
