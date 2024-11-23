@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <?php
-
 session_start();
-
 ?>
 <html lang="en">
 <head>
@@ -12,106 +10,74 @@ session_start();
 </head>
 
 <body>
-
     <div class="containerlogin">
         <div class="box2 form-box2">
-
             <?php
-                include("php/config.php"); 
+            include("php/config.php");
 
-               if(isset($_POST['submit'])){
-                    $username  =  mysqli_real_escape_string($conn,$_POST['username']);
-                    $password  =  mysqli_real_escape_string($conn,$_POST['password']);
+            if (isset($_POST['submit'])) {
+                $username = mysqli_real_escape_string($conn, trim($_POST['username']));
+                $password = mysqli_real_escape_string($conn, trim($_POST['password']));
 
-                    $sql = "SELECT * FROM useraccount WHERE Username = '$username' AND Password = '$password'"; 
-                    
-                    $result = mysqli_query($conn,$sql); 
-                    $row = mysqli_fetch_assoc($result); 
+                // Query to get the user based on username
+                $sql = "SELECT * FROM useraccount WHERE Username = '$username'";
+                $result = mysqli_query($conn, $sql);
 
+                if (!$result) {
+                    die("Query failed: " . mysqli_error($conn)); // Debugging
+                }
 
-                    if(!$result)
-                    {
-                        die("Query failed: ".mysqli_error($conn)); 
+                if (mysqli_num_rows($result) > 0) {
+                    $row = mysqli_fetch_assoc($result);
+
+                    // Verify the password
+                    if (password_verify($password, $row['Password'])) {
+                        $_SESSION['userid'] = $row['UserAccountID']; // Store user ID in session
+
+                        // Redirect based on UserType
+                        switch ($row['UserType']) {
+                            case 'Doctor':
+                                header("Location: doctoruser.php");
+                                exit();
+                            case 'Staff':
+                                header("Location: staffuser.php");
+                                exit();
+                            case 'Patient':
+                                header("Location: patientuser.php");
+                                exit();
+                            case 'Admin':
+                                header("Location: admin.php");
+                                exit();
+                            default:
+                                echo "<div class='message'><p>Unknown UserType. Please contact support.</p></div>";
+                        }
+                    } else {
+                        echo "<div class='message'><p>Incorrect Username or Password</p></div>";
                     }
-
-                    else if(is_array($row) && !empty($row))
-                    {
-                        
-                        $userid = $row['UserAccountID'];
-                        $_SESSION['userid'] = $userid; 
-
-
-                        $doctorQuery = "SELECT * FROM useraccount where UserAccountID = '$userid' AND UserType ='Doctor'";
-                        $doctorResult = mysqli_query($conn, $doctorQuery); 
-                        $doctorRow = mysqli_fetch_assoc($doctorResult); 
-                        if(is_array($doctorRow) && !empty($doctorRow))
-                        {
-                            header("Location: doctoruser.php");
-                        }
-                      
-                        $staffQuery = "SELECT * FROM useraccount where UserAccountID = '$userid' AND UserType='Staff'"; 
-                        $staffResult = mysqli_query($conn,$staffQuery); 
-                        $staffRow=mysqli_fetch_assoc($staffResult); 
-
-                        if(is_array($staffRow) && !empty($staffRow))
-                        {
-                            header("Location: staffuser.php");
-                        }
-
-                        $patientQuery ="SELECT * FROM useraccount where UserAccountID ='$userid' AND UserType='Patient'"; 
-                        $patientResult = mysqli_query($conn,$patientQuery); 
-                        $patientRow=mysqli_fetch_assoc($patientResult); 
-                        
-                        if(is_array($patientRow) && !empty($patientRow))
-                        {
-                            header("Location: patientuser2.php"); 
-                        }
-
-                        $adminQuery = "SELECT * FROM useraccount where UserAccountID ='$userid' AND UserType='Admin'";
-                        $adminResult = mysqli_query($conn,$adminQuery); 
-                        $adminRow=mysqli_fetch_assoc($adminResult);
-                        if(is_array($adminRow) && !empty($adminRow))
-                        {
-                            header("Location: admin.php");
-                        }
-                    }
-                    else{
-                        echo "<div class='message'>
-                        <p>Wrong Username or Password</p>
-                        </div><br>";
-                        echo "<a href='index.php'><button class='btn'>Go Back</button></a>";
-                    }
-                    
-                }else
-                {
-
+                } else {
+                    echo "<div class='message'><p>User not found. Please check your credentials.</p></div>";
+                }
+            } else {
             ?>
             <header>Login</header>
             <form action="" method="post">
                 <div class="field input">
-                <label for="username">Username</label>
-                <input type="text" placeholder="Enter Username" name="username" id="username" autocomplete="off" required>
-            </div>
+                    <label for="username">Username</label>
+                    <input type="text" placeholder="Enter Username" name="username" id="username" autocomplete="off" required>
+                </div>
                 <div class="field input">
-                <label>Password</label>
-                <input type="password" placeholder="Enter Password" name="password" id="password" autocomplete="off" required>
-           
-            </div>
-               
-            <div class="field">
-                <input type="submit" class="btn2" name="submit" value="Login" required>
-            </div>
-            <div class="links2">
-                Don't have account? <a href="register.php">Sign Up Now</a>
-            </div>
+                    <label>Password</label>
+                    <input type="password" placeholder="Enter Password" name="password" id="password" autocomplete="off" required>
+                </div>
+                <div class="field">
+                    <input type="submit" class="btn2" name="submit" value="Login" required>
+                </div>
+                <div class="links2">
+                    Don't have an account? <a href="register.php">Sign Up Now</a>
+                </div>
             </form>
-
+            <?php } ?>
         </div>
-            
-   <?php } ?>
-
     </div>
-
-
 </body>
 </html>
