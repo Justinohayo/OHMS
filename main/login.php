@@ -17,6 +17,7 @@ session_start();
         <div class="box2 form-box2">
 
             <?php
+                include("config.php"); 
 
                if(isset($_POST['submit'])){
                     $username  =  mysqli_real_escape_string($conn,$_POST['username']);
