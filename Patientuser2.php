@@ -3,7 +3,7 @@ session_start();
 include("php/config.php");
 
 // Determine the active section
-$active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
+$active_section = isset($_GET['section']) ? htmlspecialchars($_GET['section']) : 'home';
 ?>
 
 <!DOCTYPE html>
@@ -26,8 +26,6 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
     </nav>
 </header>
 
-
-
 <main>
     <?php
     switch ($active_section) {
@@ -48,16 +46,14 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                             <th>Last Name</th>
                             <th>DOB</th>
                             <th>Gender</th>
-                           
                         </tr>
                     </thead>
                     <tbody>
                         <?php
+                        $query = "SELECT * FROM doctor";
                         if (isset($_GET['search_doctors'])) {
                             $search = mysqli_real_escape_string($conn, $_GET['search_doctors']);
                             $query = "SELECT * FROM doctor WHERE CONCAT(DoctorID, FirstName, LastName) LIKE '%$search%'";
-                        } else {
-                            $query = "SELECT * FROM doctor";
                         }
                         $result = mysqli_query($conn, $query);
 
@@ -69,11 +65,10 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                                     <td>" . htmlspecialchars($row['Lastname']) . "</td>
                                     <td>" . htmlspecialchars($row['DOB']) . "</td>
                                     <td>" . htmlspecialchars($row['Sex']) . "</td>
-                                   
                                 </tr>";
                             }
                         } else {
-                            echo "<tr><td colspan='6'>No Records Found</td></tr>";
+                            echo "<tr><td colspan='5'>No Records Found</td></tr>";
                         }
                         ?>
                     </tbody>
@@ -82,115 +77,84 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
             <?php
             break;
 
-           
-            case 'Prescription':
+        case 'Prescription':
+            if (!isset($_SESSION['userAccountID'])) {
+                echo "<p>You are not logged in. Please log in to view your prescriptions.</p>";
+                exit();
+            }
 
-                
+            $userAccountID = $_SESSION['userAccountID'];
 
-                // Debug: Check session data
-if (!isset($_SESSION['userAccountID'])) {
-    echo "<p>You are not logged in. Please log in to view your tests.</p>";
-    exit();
-}
+            // Get the PatientID
+            $query_patient_id = "SELECT patientID FROM userAccount WHERE userAccountID = '$userAccountID'";
+            $result_patient_id = mysqli_query($conn, $query_patient_id);
 
-$userAccountID = $_SESSION['userAccountID'];
+            if ($result_patient_id && mysqli_num_rows($result_patient_id) > 0) {
+                $patient_data = mysqli_fetch_assoc($result_patient_id);
+                $patient_id = $patient_data['patientID'];
+            } else {
+                echo "<p>Unable to retrieve your Patient ID. Please contact support.</p>";
+                exit();
+            }
 
-// Test database connection
-if (!$conn) {
-    die("Database connection failed: " . mysqli_connect_error());
-}
+            // Unified query
+            $unified_query = "
+                SELECT AssignedBloodTestID AS TestID, PatientID, DoctorID, DateAssigned, BloodTestType AS TestType
+                FROM assignedbloodtest
+                WHERE PatientID = '$patient_id'
+                UNION
+                SELECT AssignedTestID AS TestID, PatientID, DoctorID, DateAssigned, TestType
+                FROM assignedtest
+                WHERE PatientID = '$patient_id'";
 
-// Fetch patientID
-$query_patient_id = "SELECT patientID FROM userAccount WHERE userAccountID = ?";
-$stmt = mysqli_prepare($conn, $query_patient_id);
-mysqli_stmt_bind_param($stmt, 'i', $userAccountID);
-mysqli_stmt_execute($stmt);
-$result_patient_id = mysqli_stmt_get_result($stmt);
+            if (isset($_GET['unified_test_search']) && !empty($_GET['unified_test_search'])) {
+                $test_id = mysqli_real_escape_string($conn, $_GET['unified_test_search']);
+                $unified_query .= " AND (AssignedBloodTestID = '$test_id' OR AssignedTestID = '$test_id')";
+            }
 
-if ($result_patient_id && mysqli_num_rows($result_patient_id) > 0) {
-    $patient_data = mysqli_fetch_assoc($result_patient_id);
-    $patient_id = $patient_data['patientID'];
-} else {
-    echo "<p>Unable to retrieve your Patient ID. Please contact support.</p>";
-    exit();
-}
-
-// Prepare the unified query to fetch assigned tests and blood tests for the patient
-$unified_query = "
-    SELECT AssignedBloodTestID AS TestID, PatientID, DoctorID, DateAssigned, BloodTestType AS TestType
-    FROM assignedbloodtest
-    WHERE PatientID = ?
-    UNION
-    SELECT AssignedTestID AS TestID, PatientID, DoctorID, DateAssigned, TestType
-    FROM assignedtest
-    WHERE PatientID = ?";
-
-// Prepare the statement
-$stmt = mysqli_prepare($conn, $unified_query);
-mysqli_stmt_bind_param($stmt, 'ii', $patient_id, $patient_id);
-
-// Filter by TestID if search input is provided
-if (isset($_GET['unified_test_search']) && !empty($_GET['unified_test_search'])) {
-    $test_id = $_GET['unified_test_search'];
-    $unified_query .= " AND (AssignedBloodTestID = ? OR AssignedTestID = ?)";
-    mysqli_stmt_bind_param($stmt, 'ii', $test_id, $test_id);
-}
-
-// Execute the query
-if (!mysqli_stmt_execute($stmt)) {
-    die('Query execution failed: ' . mysqli_error($conn));  // Debugging query execution
-}
-
-$unified_result = mysqli_stmt_get_result($stmt);
-?>
-
-<section id="Prescription">
-    <h2>Prescriptions</h2>
-    <form action="" method="GET">
-        <input type="hidden" name="section" value="Prescription">
-        <label for="unified_test_search">Search Test ID:</label>
-        <input type="text" id="unified_test_search" name="unified_test_search" placeholder="Enter Test ID">
-        <button type="submit">Search</button>
-    </form>
-    
-    <?php
-    if ($unified_result && mysqli_num_rows($unified_result) > 0) {
-        echo "<table><thead><tr><th>TestID</th><th>PatientID</th><th>DoctorID</th><th>DateAssigned</th><th>TestType</th></tr></thead><tbody>";
-        
-        while ($row = mysqli_fetch_assoc($unified_result)) {
-            // Format Date
-            $formatted_date = date('Y-m-d', strtotime($row['DateAssigned']));
-            
-            // Display the row
-            echo "<tr>
-                    <td>" . htmlspecialchars($row['TestID']) . "</td>
-                    <td>" . htmlspecialchars($row['PatientID']) . "</td>
-                    <td>" . htmlspecialchars($row['DoctorID']) . "</td>
-                    <td>" . $formatted_date . "</td>
-                    <td>" . htmlspecialchars($row['TestType']) . "</td>
-                  </tr>";
-        }
-        
-        echo "</tbody></table>";
-    } else {
-        echo "<p>No tests found for your Patient ID.</p>";
-    }
-    ?>
-</section>
-
-            
+            $unified_result = mysqli_query($conn, $unified_query);
+            ?>
+            <section id="Prescription">
+                <h2>Prescriptions</h2>
+                <form action="" method="GET">
+                    <input type="hidden" name="section" value="Prescription">
+                    <label for="unified_test_search">Search Test ID:</label>
+                    <input type="text" id="unified_test_search" name="unified_test_search" placeholder="Enter Test ID">
+                    <button type="submit">Search</button>
+                </form>
+                <?php
+                if ($unified_result && mysqli_num_rows($unified_result) > 0) {
+                    echo "<table><thead><tr><th>TestID</th><th>PatientID</th><th>DoctorID</th><th>DateAssigned</th><th>TestType</th></tr></thead><tbody>";
+                    while ($row = mysqli_fetch_assoc($unified_result)) {
+                        $formatted_date = date('Y-m-d', strtotime($row['DateAssigned']));
+                        echo "<tr>
+                            <td>" . htmlspecialchars($row['TestID']) . "</td>
+                            <td>" . htmlspecialchars($row['PatientID']) . "</td>
+                            <td>" . htmlspecialchars($row['DoctorID']) . "</td>
+                            <td>" . $formatted_date . "</td>
+                            <td>" . htmlspecialchars($row['TestType']) . "</td>
+                        </tr>";
+                    }
+                    echo "</tbody></table>";
+                } else {
+                    echo "<p>No prescriptions found for your Patient ID.</p>";
+                }
+                ?>
+            </section>
+            <?php
+            break;
 
         case 'MyProfile':
             ?>
             <section id="MyProfile">
                 <h2>My Profile</h2>
                 <?php
-                $doctor_id = $_SESSION['PatienID']; // Assuming doctor ID is stored in session
-                $query = "SELECT * FROM doctor WHERE PatienID = '$doctor_id'";
+                $doctor_id = $_SESSION['userAccountID']; // Assuming userAccountID represents PatientID
+                $query = "SELECT * FROM doctor WHERE PatientID = '$doctor_id'";
                 $result = mysqli_query($conn, $query);
 
                 if ($result && mysqli_num_rows($result) > 0) {
-                    $doctor = mysqli_fetch_assoc($result);
+                    $patient = mysqli_fetch_assoc($result);
                     echo "<p><strong>Name:</strong> " . htmlspecialchars($patient['Firstname'] . ' ' . $patient['Lastname']) . "</p>";
                     echo "<p><strong>Email:</strong> " . htmlspecialchars($patient['Email']) . "</p>";
                     echo "<p><strong>Phone:</strong> " . htmlspecialchars($patient['Phone']) . "</p>";
