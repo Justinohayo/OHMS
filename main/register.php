@@ -12,79 +12,90 @@
 </head>
 
 <body>
+    
     <div class="containerregister">
         <div class="box form-box">
-       <?php
+        <?php
         include("php/config.php");
 
         function generateID($prefix) {
             return $prefix . str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
         }
-        
+
         if (isset($_POST['submit'])) {
+            // Generate unique IDs
             $addressid = generateID('ADR_');
             $contactid = generateID('CNT_');
             $patientid = generateID('PAT_');
             $useraccountid = generateID('USR_');
-        
-            $username = $_POST["username"];
-            $password = $_POST["password"];
-            $firstname = $_POST["firstname"];
-            $lastname = $_POST["lastname"];
-            $sex = $_POST["sex"];
-            $email = $_POST["email"];
-            $dob = $_POST["dob"];
-            $street = $_POST["street"];
-            $city = $_POST["city"];
-            $postalcode = $_POST["postalcode"];
-        
-            // Verify unique email
+
+            // Sanitize inputs
+            $username = mysqli_real_escape_string($conn, trim($_POST["username"]));
+            $password = mysqli_real_escape_string($conn, trim($_POST["password"]));
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            $firstname = mysqli_real_escape_string($conn, trim($_POST["firstname"]));
+            $lastname = mysqli_real_escape_string($conn, trim($_POST["lastname"]));
+            $sex = mysqli_real_escape_string($conn, trim($_POST["sex"]));
+            $email = mysqli_real_escape_string($conn, trim($_POST["email"]));
+            $dob = mysqli_real_escape_string($conn, trim($_POST["dob"]));
+            $street = mysqli_real_escape_string($conn, trim($_POST["street"]));
+            $city = mysqli_real_escape_string($conn, trim($_POST["city"]));
+            $postalcode = mysqli_real_escape_string($conn, trim($_POST["postalcode"]));
+
+            // Check for duplicate email
             $verify_query = mysqli_query($conn, "SELECT Email FROM Contact WHERE Email='$email'");
             if (mysqli_num_rows($verify_query) > 0) {
                 echo "<div class='message'>
                         <p>This email is already in use by another user, try another one please!</p>
                       </div><br>";
-                echo "<a href='javascript:self.history.back()'><button class='btn'>Go Back</button></a>";
-            } else {
-         
-                mysqli_begin_transaction($conn);
-        
-                try {
-                    $insert_query = "INSERT INTO UserAccount (UserAccountID, UserType, Username, Password, AccountStatus) 
-                                     VALUES ('$useraccountid', 'Patient', '$username', '$password', 'Pending')";
-                    if (!mysqli_query($conn, $insert_query)) {
-                        throw new Exception("User Account Insert Error: " . mysqli_error($conn));
-                    }
-        
-                    $insert_query3 = "INSERT INTO Contact (ContactID, Email) 
-                                        VALUES ('$contactid', '$email')";
-                    if (!mysqli_query($conn, $insert_query3)) {
-                        throw new Exception("Contact Insert Error: " . mysqli_error($conn));
-                    }
-        
-                    $insert_query4 = "INSERT INTO Address (AddressID, Street, City, PostalCode) 
-                                      VALUES ('$addressid', '$street', '$city', '$postalcode')";
-                    if (!mysqli_query($conn, $insert_query4)) {
-                        throw new Exception("Address Insert Error: " . mysqli_error($conn));
-                    }
-        
-                    $insert_query2 = "INSERT INTO Patient (PatientID, Firstname, Lastname, DOB, Sex, AddressID, ContactID) 
-                                      VALUES ('$patientid', '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
-                    if (!mysqli_query($conn, $insert_query2)) {
-                        throw new Exception("Patient Insert Error: " . mysqli_error($conn));
-                    }
-        
-                    mysqli_commit($conn);
-                    echo "<div class='message'><p>Registration successful!</p></div>";
-        
-                } catch (Exception $e) {
-                    mysqli_rollback($conn);
-                    echo "<div class='message'><p>Registration failed: " . $e->getMessage() . "</p></div>";
+                exit();
+            }
+
+            // Check for duplicate username
+            $verify_username_query = mysqli_query($conn, "SELECT Username FROM UserAccount WHERE Username='$username'");
+            if (mysqli_num_rows($verify_username_query) > 0) {
+                echo "<div class='message'>
+                        <p>This username is already in use. Please try another one.</p>
+                      </div><br>";
+                exit();
+            }
+
+            // Begin transaction
+            mysqli_begin_transaction($conn);
+
+            try {
+                $insert_query = "INSERT INTO UserAccount (UserAccountID, UserType, Username, Password, AccountStatus) 
+                                 VALUES ('$useraccountid', 'Patient', '$username', '$hashedPassword', 'Pending')";
+                if (!mysqli_query($conn, $insert_query)) {
+                    throw new Exception("User Account Insert Error: " . mysqli_error($conn));
                 }
+
+                $insert_query3 = "INSERT INTO Contact (ContactID, Email) 
+                                  VALUES ('$contactid', '$email')";
+                if (!mysqli_query($conn, $insert_query3)) {
+                    throw new Exception("Contact Insert Error: " . mysqli_error($conn));
+                }
+
+                $insert_query4 = "INSERT INTO Address (AddressID, Street, City, PostalCode) 
+                                  VALUES ('$addressid', '$street', '$city', '$postalcode')";
+                if (!mysqli_query($conn, $insert_query4)) {
+                    throw new Exception("Address Insert Error: " . mysqli_error($conn));
+                }
+
+                $insert_query2 = "INSERT INTO Patient (PatientID, Firstname, Lastname, DOB, Sex, AddressID, ContactID) 
+                                  VALUES ('$patientid', '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
+                if (!mysqli_query($conn, $insert_query2)) {
+                    throw new Exception("Patient Insert Error: " . mysqli_error($conn));
+                }
+
+                mysqli_commit($conn);
+                echo "<div class='message'><p>Registration successful!</p></div>";
+            } catch (Exception $e) {
+                mysqli_rollback($conn);
+                echo "<div class='message'><p>Registration failed: " . $e->getMessage() . "</p></div>";
             }
         }
-
-        ?> 
+        ?>
             <header>Sign Up</header>
             <form action="" method="post" id="myform">
                 <div class="field">
