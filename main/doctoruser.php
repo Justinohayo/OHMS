@@ -1,51 +1,163 @@
+<?php
+session_start();
+include("php/config.php");
+
+// Determine the active section
+$active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="Patientuser.css">
-    <title>OHMS - Online Health Monitor System</title>
+    <link rel="stylesheet" href="Userpage.css">
+    <title>OHMS - Doctor Portal</title>
 </head>
-
 <body>
+<header>
+    <p><a href="index.html" class="logo">OHMS</a></p>
+    <nav class="user">
+        <a href="?section=home" class="<?= $active_section === 'home' ? 'active' : '' ?>">Home</a>
+        <a href="?section=ViewPatients" class="<?= $active_section === 'ViewPatients' ? 'active' : '' ?>">View Patients</a>
+        <a href="?section=PatientHistory" class="<?= $active_section === 'PatientHistory' ? 'active' : '' ?>">Patient History</a>
+        <a href="?section=DoctorProfile" class="<?= $active_section === 'DoctorProfile' ? 'active' : '' ?>">Profile</a>
+        <a href="logout.php">Logout</a>
+    </nav>
+</header>
 
-    <header>
-        <h1>
-            <a href="/OHMS/main/index.html">Online Health Monitor System</a>
-        </h1>
-        
-        <nav class="main-nav">
-            <a href="C:\Users\satnam\OneDrive\Documents\GitHub\OHMS\main\index.html">Home</a>
-            <a href="main\AboutUs.html">About Us</a>
-            <a href="main\Services.html">Services</a>
-            <a href="main\Contact.html">Contact</a>
-            <a href="myProfile.html" class="login profile-link">
-                <img src="images\userpic.png" alt="My Profile" class="profile-image">
-            </a>
-        </nav>
-    </header>
+<main>
+    <?php
+    switch ($active_section) {
+        case 'ViewPatients':
+            ?>
+            <section id="ViewPatients">
+                <form role="search" method="GET" class="searchbar">
+                    <input type="hidden" name="section" value="ViewPatients">
+                    <label for="search_patients">Search Patients</label>
+                    <input id="search_patients" name="search_patients" type="search" placeholder="Search..." autofocus required>
+                    <button type="submit">Go</button>
+                </form>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Patient ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Last Visit Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        if (isset($_GET['search_patients'])) {
+                            $search = mysqli_real_escape_string($conn, $_GET['search_patients']);
+                            $query = "SELECT * FROM patients WHERE CONCAT(PatientID, FirstName, LastName) LIKE '%$search%'";
+                        } else {
+                            $query = "SELECT * FROM patients";
+                        }
+                        $result = mysqli_query($conn, $query);
 
-    <div class="container">
-        <aside class="sidebar">
-            <nav class="features-nav">
-                
-                <a href="viewResults.html">View Results</a>
-                <a href="appointments.html">Appointments</a>
-                <a href="prescriptionTest.html">Prescription Test</a>
-            </nav>
-        </aside>
-
-        <main class="content">
-            <section>
-                <h2>Welcome to the Online Health Monitor System</h2>
-                <p>Explore your health records, manage appointments, and connect with healthcare professionals easily.</p>
-                
+                        if ($result && mysqli_num_rows($result) > 0) {
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                echo "<tr>
+                                    <td>" . htmlspecialchars($row['PatientID']) . "</td>
+                                    <td>" . htmlspecialchars($row['FirstName']) . "</td>
+                                    <td>" . htmlspecialchars($row['LastName']) . "</td>
+                                    <td>" . htmlspecialchars($row['Age']) . "</td>
+                                    <td>" . htmlspecialchars($row['Gender']) . "</td>
+                                    <td>" . htmlspecialchars($row['LastVisitDate']) . "</td>
+                                </tr>";
+                            }
+                        } else {
+                            echo "<tr><td colspan='6'>No Records Found</td></tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
             </section>
-        </main>
-    </div>
+            <?php
+            break;
 
-    <footer>
-        <p>&copy; 2024 Online Health Monitor System</p>
-    </footer>
+        case 'PatientHistory':
+            ?>
+            <section id="PatientHistory">
+                <form action="" method="GET">
+                    <input type="hidden" name="section" value="PatientHistory">
+                    <label for="patient_id">Enter Patient ID:</label>
+                    <input type="text" id="patient_id" name="patient_id" placeholder="Search Patient ID..." required>
+                    <button type="submit">View History</button>
+                </form>
+                <?php
+                if (isset($_GET['patient_id'])) {
+                    $patient_id = mysqli_real_escape_string($conn, $_GET['patient_id']);
+                    $query = "SELECT * FROM testresult WHERE PatientID = '$patient_id'";
 
+                    $result = mysqli_query($conn, $query);
+
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        echo "<h3>Patient Test Results</h3>";
+                        echo "<table>
+                                <thead>
+                                    <tr>
+                                        <th>Test Result ID</th>
+                                        <th>Date</th>
+                                        <th>Test Type</th>
+                                        <th>Result</th>
+                                        <th>Doctor's Note</th>
+                                    </tr>
+                                </thead>
+                                <tbody>";
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            echo "<tr>
+                                    <td>" . htmlspecialchars($row['TestResultID']) . "</td>
+                                    <td>" . htmlspecialchars($row['DateUpdated']) . "</td>
+                                    <td>" . htmlspecialchars($row['TestType']) . "</td>
+                                    <td>" . htmlspecialchars($row['Result']) . "</td>
+                                    <td>" . htmlspecialchars($row['DoctorNote']) . "</td>
+                                </tr>";
+                        }
+                        echo "</tbody></table>";
+                    } else {
+                        echo "<p>No history found for this patient.</p>";
+                    }
+                }
+                ?>
+            </section>
+            <?php
+            break;
+
+        case 'DoctorProfile':
+            ?>
+            <section id="DoctorProfile">
+                <h2>My Profile</h2>
+                <?php
+                $doctor_id = $_SESSION['DoctorID']; // Assuming doctor ID is stored in session
+                $query = "SELECT * FROM doctor WHERE DoctorID = '$doctor_id'";
+                $result = mysqli_query($conn, $query);
+
+                if ($result && mysqli_num_rows($result) > 0) {
+                    $doctor = mysqli_fetch_assoc($result);
+                    echo "<p><strong>Name:</strong> " . htmlspecialchars($doctor['Firstname'] . ' ' . $doctor['Lastname']) . "</p>";
+                    echo "<p><strong>Email:</strong> " . htmlspecialchars($doctor['Email']) . "</p>";
+                    echo "<p><strong>Phone:</strong> " . htmlspecialchars($doctor['Phone']) . "</p>";
+                    echo "<p><strong>Specialization:</strong> " . htmlspecialchars($doctor['Specialization']) . "</p>";
+                } else {
+                    echo "<p>Profile information not found.</p>";
+                }
+                ?>
+            </section>
+            <?php
+            break;
+
+        default:
+            ?>
+            <section id="home">
+                <h2>Welcome, Doctor, to the Online Health Monitor System</h2>
+            </section>
+            <?php
+    }
+    ?>
+</main>
 </body>
 </html>
