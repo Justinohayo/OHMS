@@ -1,4 +1,4 @@
-<?php
+?php
 session_start();
 include("php/config.php");
 
@@ -22,6 +22,7 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
         <a href="?section=PatientHistory" class="<?= $active_section === 'PatientHistory' ? 'active' : '' ?>">Patient History</a>
         <a href="?section=DoctorProfile" class="<?= $active_section === 'DoctorProfile' ? 'active' : '' ?>">Profile</a>
         <a href="logout.php">Logout</a>
+        <span></span>
     </nav>
 </header>
 
@@ -82,11 +83,11 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
         case 'PatientHistory':
             ?>
             <section id="PatientHistory">
-                <form action="" method="GET">
-                    <input type="hidden" name="section" value="PatientHistory">
-                    <label for="patient_id">Enter Patient ID:</label>
-                    <input type="text" id="patient_id" name="patient_id" placeholder="Search Patient ID..." required>
-                    <button type="submit">View History</button>
+            <form role="search" method="GET" class="searchbar">
+                    <input type="hidden" name="section" value="ViewPatients">
+                    <label for="patient_id">Search Patients</label>
+                    <input id="patient_id" name="search_patients" type="search" placeholder="Search..." autofocus required>
+                    <button type="submit">Go</button>
                 </form>
                 <?php
                 if (isset($_GET['patient_id'])) {
@@ -161,3 +162,4 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
 </main>
 </body>
 </html>
+
