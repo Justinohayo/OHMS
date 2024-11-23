@@ -1,6 +1,7 @@
 <?php
 session_start();
 include("php/config.php");
+include("php/report.php"); 
 
 // Determine the active section
 $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
