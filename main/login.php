@@ -17,7 +17,7 @@ session_start();
         <div class="box2 form-box2">
 
             <?php
-                include("config.php"); 
+                include("php/config.php"); 
 
                if(isset($_POST['submit'])){
                     $username  =  mysqli_real_escape_string($conn,$_POST['username']);
@@ -64,7 +64,7 @@ session_start();
                         
                         if(is_array($patientRow) && !empty($patientRow))
                         {
-                            header("Location: patientuser.php"); 
+                            header("Location: patientuser2.php"); 
                         }
 
                         $adminQuery = "SELECT * FROM useraccount where UserAccountID ='$userid' AND UserType='Admin'";
