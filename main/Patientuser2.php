@@ -80,10 +80,10 @@ $active_section = isset($_GET['section']) ? htmlspecialchars($_GET['section']) :
         case 'Prescription':
            
 
-            $userAccountID = $_SESSION['userAccountID'];
+            $userAccountID = $_SESSION['UserAccountID'];
 
             // Get the PatientID
-            $query_patient_id = "SELECT patientID FROM userAccount WHERE userAccountID = '$userAccountID'";
+            $query_patient_id = "SELECT PatientID FROM UserAccount WHERE UserAccountID = '$userAccountID'";
             $result_patient_id = mysqli_query($conn, $query_patient_id);
 
             if ($result_patient_id && mysqli_num_rows($result_patient_id) > 0) {
