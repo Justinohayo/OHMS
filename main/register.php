@@ -83,7 +83,7 @@
                 }
 
                 $insert_query2 = "INSERT INTO Patient (PatientID, Firstname, Lastname, DOB, Sex, AddressID, ContactID) 
-                                  VALUES ('$patientid', '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
+                                  VALUES ('$patientid', '$useraccountid', '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
                 if (!mysqli_query($conn, $insert_query2)) {
                     throw new Exception("Patient Insert Error: " . mysqli_error($conn));
                 }
