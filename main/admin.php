@@ -259,14 +259,14 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
         
                     // Insert into Doctor or Staff 
                     if ($usertype === 'Doctor') {
-                        $insert_doctor = "INSERT INTO doctor (DoctorID, Firstname, Lastname, DOB, Sex, AddressID, ContactID) 
-                                          VALUES ('$doctorid', '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
+                        $insert_doctor = "INSERT INTO doctor (DoctorID, UserAccountID, Firstname, Lastname, DOB, Sex, AddressID, ContactID) 
+                                          VALUES ('$doctorid', '$useraccountid '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
                         if (!mysqli_query($conn, $insert_doctor)) {
                             throw new Exception("Doctor Insert Error: " . mysqli_error($conn));
                         }
                     } else {
-                        $insert_staff = "INSERT INTO staff (StaffID, Firstname, Lastname, DOB, Sex, AddressID, ContactID)
-                                         VALUES ('$staffid', '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
+                        $insert_staff = "INSERT INTO staff (StaffID,UserAccountID, Firstname, Lastname, DOB, Sex, AddressID, ContactID)
+                                         VALUES ('$staffid', '$useraccountid', '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
                         if (!mysqli_query($conn, $insert_staff)) {
                             throw new Exception("Staff Insert Error: " . mysqli_error($conn));
                         }
