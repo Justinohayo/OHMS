@@ -4,57 +4,6 @@ include("php/config.php");
 
 // Determine the active section
 $active_section = isset($_GET['section']) ? htmlspecialchars($_GET['section']) : 'home';
-
-// Check if the patient has been selected
-$patient_selected = isset($_POST['PatientID']) ? $_POST['PatientID'] : (isset($_GET['PatientID']) ? $_GET['PatientID'] : ''); 
-
-// Check if the test type is selected
-$test_selected = isset($_POST['TestType']) ? $_POST['TestType'] : '';
-
-// Get the attributes based on the selected test type
-$test_attributes = [];
-if ($test_selected) {
-    switch ($test_selected) {
-        case 'Routine Hematology':
-            $test_attributes = ['Hemoglobin Level (g/dL)', 'WBC Count (cells/mcL)', 'Platelet Count (cells/mcL)'];
-            break;
-        case 'Coagulation':
-            $test_attributes = ['PT (sec)', 'INR', 'APTT (sec)'];
-            break;
-        case 'Routine Chemistry':
-            $test_attributes = ['Glucose (mg/dL)', 'Creatinine (mg/dL)', 'Cholesterol (mg/dL)', 'Electrolytes (mmol/L)'];
-            break;
-        case 'Renal Function':
-            $test_attributes = ['eGFR (mL/min/1.73m2)', 'BUN (mg/dL)', 'Creatinine (mg/dL)'];
-            break;
-        case 'Liver Function':
-            $test_attributes = ['AST (U/L)', 'ALT (U/L)', 'Bilirubin (mg/dL)'];
-            break;
-        case 'Pancreas Function':
-            $test_attributes = ['Amylase (U/L)', 'Lipase (U/L)'];
-            break;
-        case 'Endocrinology':
-            $test_attributes = ['TSH (mU/L)', 'Free T4 (ng/dL)', 'Free T3 (pg/mL)'];
-            break;
-        case 'Tumor Markers':
-            $test_attributes = ['CA-125 (U/mL)', 'PSA (ng/mL)', 'AFP (ng/mL)'];
-            break;
-        case 'ECG':
-            $test_attributes = ['Heart Rate (bpm)', 'ECG Findings'];
-            break;
-        case 'X-Ray':
-            $test_attributes = ['Findings (Description)', 'Location'];
-            break;
-        case 'CT Scan':
-            $test_attributes = ['Findings (Description)', 'Location', 'Scan Type'];
-            break;
-        case 'Ultrasound':
-            $test_attributes = ['Findings (Description)', 'Location', 'Scan Type'];
-            break;
-        default:
-            $test_attributes = [];
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -62,143 +11,174 @@ if ($test_selected) {
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="Userpage.css">
-    <title>OHMS - Staff Portal</title>
+    <title>OHMS - Doctor Portal</title>
 </head>
 <body>
 <header>
     <p><a href="index.html" class="logo">OHMS</a></p>
     <nav class="user">
         <a href="?section=home" class="<?= $active_section === 'home' ? 'active' : '' ?>">Home</a>
-        <a href="?section=CreateTestResults" class="<?= $active_section === 'CreateTestResults' ? 'active' : '' ?>">Create Test Results</a>
-        <a href="?section=ModifyTestResults" class="<?= $active_section === 'ModifyTestResults' ? 'active' : '' ?>">Modify Test Results</a>
+        <a href="?section=ViewDoctors" class="<?= $active_section === 'ViewDoctors' ? 'active' : '' ?>">My Doctors</a>
+        <a href="?section=Prescription" class="<?= $active_section === 'Prescription' ? 'active' : '' ?>">Prescription</a>
         <a href="?section=MyProfile" class="<?= $active_section === 'MyProfile' ? 'active' : '' ?>">My Profile</a>
         <a href="logout.php">Logout</a>
-
-        <span> </span>
+        <span></span>
     </nav>
 </header>
 
 <main>
     <?php
     switch ($active_section) {
-        case 'CreateTestResults':
+        case 'ViewDoctors':
             ?>
-            <section id="CreateTestResults">
-                <h2>Create Test Results</h2>
-
-                <?php
-                // If a patient ID is selected, show the test creation form
-                if ($patient_selected) {
-                    // Fetch patient details
-                    $query = "SELECT PatientID, CONCAT(Firstname, ' ', Lastname) AS FullName FROM patient WHERE PatientID = '$patient_selected'";
-                    $result = mysqli_query($conn, $query);
-                    $patient = mysqli_fetch_assoc($result);
-                    if ($patient) {
-                        ?>
-                        <form method="POST" action="create_test_result.php">
-                            <label for="PatientID">Patient: </label>
-                            <input id="PatientID" name="PatientID" type="text" value="<?= htmlspecialchars($patient['FullName']) ?>" readonly required>
-
-                            <label for="TestType">Test Type</label>
-                            <select id="TestType" name="TestType" required>
-                                <option value="">-- Select Test Type --</option>
-                                <optgroup label="Blood Tests">
-                                    <option value="Routine Hematology">Routine Hematology</option>
-                                    <option value="Coagulation">Coagulation</option>
-                                    <option value="Routine Chemistry">Routine Chemistry</option>
-                                    <option value="Renal Function">Renal Function</option>
-                                    <option value="Liver Function">Liver Function</option>
-                                    <option value="Pancreas Function">Pancreas Function</option>
-                                    <option value="Endocrinology">Endocrinology</option>
-                                    <option value="Tumor Markers">Tumor Markers</option>
-                                </optgroup>
-                                <optgroup label="Imaging Tests">
-                                    <option value="ECG">ECG</option>
-                                    <option value="X-Ray">X-Ray</option>
-                                    <option value="CT Scan">CT Scan</option>
-                                    <option value="Ultrasound">Ultrasound</option>
-                                </optgroup>
-                            </select>
-
-                            <button type="submit">Create Test</button>
-                        </form>
+            <section id="ViewDoctors">
+                <form role="search" method="GET" class="searchbar">
+                    <input type="hidden" name="section" value="ViewDoctors">
+                    <label for="search_doctors">Search Doctors</label>
+                    <input id="search_doctors" name="search_doctors" type="search" placeholder="Search..." autofocus required>
+                    <button type="submit">Go</button>
+                </form>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Doctor ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>DOB</th>
+                            <th>Gender</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         <?php
-                        if ($test_selected) {
-                            // Show the form for attributes based on the selected test type
-                            echo "<form method='POST' action='create_test_result.php'>";
-                            echo "<h3>Test Attributes for " . htmlspecialchars($test_selected) . "</h3>";
-                            foreach ($test_attributes as $attribute) {
-                                echo "<label for='" . htmlspecialchars($attribute) . "'>" . htmlspecialchars($attribute) . ":</label>";
-                                echo "<input type='text' id='" . htmlspecialchars($attribute) . "' name='" . htmlspecialchars($attribute) . "' required><br>";
-                            }
-                            echo "<button type='submit'>Submit Test Results</button>";
-                            echo "</form>";
+                        $query = "SELECT * FROM doctor";
+                        if (isset($_GET['search_doctors'])) {
+                            $search = mysqli_real_escape_string($conn, $_GET['search_doctors']);
+                            $query = "SELECT * FROM doctor WHERE CONCAT(DoctorID, FirstName, LastName) LIKE '%$search%'";
                         }
-                    } else {
-                        echo "<p>No patient found with the selected ID.</p>";
-                    }
-                } else {
-                    // If no patient is selected, show the patient search bar
-                    ?>
-                    <form method="GET" action="" class="searchbar">
-                        <input type="hidden" name="section" value="CreateTestResults">
-                        <label for="search_patient">Search Patient</label>
-                        <input id="search_patient" name="search_patient" type="search" placeholder="Enter Patient ID, First Name, or Last Name" autofocus required>
-                        <button type="submit">Search</button>
-                    </form>
-                    <?php
-
-                    // If a search query is provided, fetch and display the results
-                    if (isset($_GET['search_patient'])) {
-                        $search = mysqli_real_escape_string($conn, $_GET['search_patient']);
-                        $query = "
-                            SELECT PatientID, CONCAT(Firstname, ' ', Lastname) AS FullName 
-                            FROM patient 
-                            WHERE PatientID LIKE '%$search%' 
-                               OR Firstname LIKE '%$search%' 
-                               OR Lastname LIKE '%$search%'
-                        ";
                         $result = mysqli_query($conn, $query);
 
-                        // Display the search results
                         if ($result && mysqli_num_rows($result) > 0) {
-                            echo "<table>";
-                            echo "<thead><tr><th>Patient ID</th><th>Name</th><th>Action</th></tr></thead>";
-                            echo "<tbody>";
                             while ($row = mysqli_fetch_assoc($result)) {
                                 echo "<tr>
-                                    <td>" . htmlspecialchars($row['PatientID']) . "</td>
-                                    <td>" . htmlspecialchars($row['FullName']) . "</td>
-                                    <td>
-                                        <form method='GET' action=''>
-                                            <input type='hidden' name='section' value='CreateTestResults'>
-                                            <input type='hidden' name='PatientID' value='" . htmlspecialchars($row['PatientID']) . "'>
-                                            <button type='submit'>Select</button>
-                                        </form>
-                                    </td>
+                                    <td>" . htmlspecialchars($row['DoctorID']) . "</td>
+                                    <td>" . htmlspecialchars($row['Firstname']) . "</td>
+                                    <td>" . htmlspecialchars($row['Lastname']) . "</td>
+                                    <td>" . htmlspecialchars($row['DOB']) . "</td>
+                                    <td>" . htmlspecialchars($row['Sex']) . "</td>
                                 </tr>";
                             }
-                            echo "</tbody>";
-                            echo "</table>";
                         } else {
-                            echo "<p>No patients found for your search query.</p>";
+                            echo "<tr><td colspan='5'>No Records Found</td></tr>";
                         }
+                        ?>
+                    </tbody>
+                </table>
+            </section>
+            <?php
+            break;
+
+        case 'Prescription':
+           
+
+            $userAccountID = $_SESSION['userid'];
+
+            // Get the PatientID
+            $query_patient_id = "SELECT PatientID FROM patient WHERE UserAccountID =  ?";
+            $result_patient_id = mysqli_query($conn, $query_patient_id);
+
+            if ($result_patient_id) 
+            {
+                if(mysqli_num_rows($result_patient_id) > 0)
+                {
+                $patient_data = mysqli_fetch_assoc($result_patient_id);
+                $patient_id = $patient_data['patientID'];
+                }
+                else
+                echo"<p>You dont have any prescription";
+            
+            } else {
+                echo "<p>Unable to retrieve your Patient ID. Please contact support.</p>";
+                exit();
+            }
+
+            // Unified query
+            $unified_query = "
+                SELECT AssignedBloodTestID AS TestID, PatientID, DoctorID, DateAssigned, BloodTestType AS TestType
+                FROM assignedbloodtest
+                WHERE PatientID = '$patient_id'
+                UNION
+                SELECT AssignedTestID AS TestID, PatientID, DoctorID, DateAssigned, TestType
+                FROM assignedtest
+                WHERE PatientID = '$patient_id'";
+
+            if (isset($_GET['unified_test_search']) && !empty($_GET['unified_test_search'])) {
+                $test_id = mysqli_real_escape_string($conn, $_GET['unified_test_search']);
+                $unified_query .= " AND (AssignedBloodTestID = '$test_id' OR AssignedTestID = '$test_id')";
+            }
+
+            $unified_result = mysqli_query($conn, $unified_query);
+            ?>
+            <section id="Prescription">
+                <h2>Prescriptions</h2>
+                <form action="" method="GET">
+                    <input type="hidden" name="section" value="Prescription">
+                    <label for="unified_test_search">Search Test ID:</label>
+                    <input type="text" id="unified_test_search" name="unified_test_search" placeholder="Enter Test ID">
+                    <button type="submit">Search</button>
+                </form>
+                <?php
+                if ($unified_result && mysqli_num_rows($unified_result) > 0) {
+                    echo "<table><thead><tr><th>TestID</th><th>PatientID</th><th>DoctorID</th><th>DateAssigned</th><th>TestType</th></tr></thead><tbody>";
+                    while ($row = mysqli_fetch_assoc($unified_result)) {
+                        $formatted_date = date('Y-m-d', strtotime($row['DateAssigned']));
+                        echo "<tr>
+                            <td>" . htmlspecialchars($row['TestID']) . "</td>
+                            <td>" . htmlspecialchars($row['PatientID']) . "</td>
+                            <td>" . htmlspecialchars($row['DoctorID']) . "</td>
+                            <td>" . $formatted_date . "</td>
+                            <td>" . htmlspecialchars($row['TestType']) . "</td>
+                        </tr>";
                     }
+                    echo "</tbody></table>";
+                } else {
+                    echo "<p>No prescriptions found for your Patient ID.</p>";
                 }
                 ?>
             </section>
             <?php
             break;
 
-        case 'ModifyTestResults':
-            // Modify Test Results code here...
+        case 'MyProfile':
+            ?>
+            <section id="MyProfile">
+                <h2>My Profile</h2>
+                <?php
+                $doctor_id = $_SESSION['userAccountID']; // Assuming userAccountID represents PatientID
+                $query = "SELECT * FROM doctor WHERE PatientID = '$doctor_id'";
+                $result = mysqli_query($conn, $query);
+
+                if ($result && mysqli_num_rows($result) > 0) {
+                    $patient = mysqli_fetch_assoc($result);
+                    echo "<p><strong>Name:</strong> " . htmlspecialchars($patient['Firstname'] . ' ' . $patient['Lastname']) . "</p>";
+                    echo "<p><strong>Email:</strong> " . htmlspecialchars($patient['Email']) . "</p>";
+                    echo "<p><strong>Phone:</strong> " . htmlspecialchars($patient['Phone']) . "</p>";
+                    echo "<p><strong>Specialization:</strong> " . htmlspecialchars($patient['Specialization']) . "</p>";
+                } else {
+                    echo "<p>Profile information not found.</p>";
+                }
+                ?>
+            </section>
+            <?php
             break;
-        
-        // Other sections here...
+
+        default:
+            ?>
+            <section id="home">
+                <h2>Welcome, Patient, to the Online Health Monitor System</h2>
+            </section>
+            <?php
     }
     ?>
 </main>
-
 </body>
 </html>
-
