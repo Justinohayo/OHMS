@@ -80,49 +80,38 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
             <?php
             break;
 
-        case 'PatientHistory':
+        case 'Prescription':
             ?>
-            <section id="PatientHistory">
-            <form role="search" method="GET" class="searchbar">
-                    <input type="hidden" name="section" value="ViewPatients">
-                    <label for="patient_id">Search Patients</label>
-                    <input id="patient_id" name="search_patients" type="search" placeholder="Search..." autofocus required>
-                    <button type="submit">Go</button>
-                </form>
+           
+
+            
+           <!--- 
+           
+           Search Patient function to assign the test, seach function could work by searching name or patient ID 
+
+           put different check list for test right here
+           general test and blood test
+
+           two checklist in one submit form
+           provide generate id 
+            
+           need to provide test date also so?
+
+           3
+
+           --->
+
+
+
+
+
+
+
                 <?php
-                if (isset($_GET['patient_id'])) {
-                    $patient_id = mysqli_real_escape_string($conn, $_GET['patient_id']);
-                    $query = "SELECT * FROM testresult WHERE PatientID = '$patient_id'";
+            /* generate query, row and database check connection 
 
-                    $result = mysqli_query($conn, $query);
-
-                    if ($result && mysqli_num_rows($result) > 0) {
-                        echo "<h3>Patient Test Results</h3>";
-                        echo "<table>
-                                <thead>
-                                    <tr>
-                                        <th>Test Result ID</th>
-                                        <th>Date</th>
-                                        <th>Test Type</th>
-                                        <th>Result</th>
-                                        <th>Doctor's Note</th>
-                                    </tr>
-                                </thead>
-                                <tbody>";
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            echo "<tr>
-                                    <td>" . htmlspecialchars($row['TestResultID']) . "</td>
-                                    <td>" . htmlspecialchars($row['DateUpdated']) . "</td>
-                                    <td>" . htmlspecialchars($row['TestType']) . "</td>
-                                    <td>" . htmlspecialchars($row['Result']) . "</td>
-                                    <td>" . htmlspecialchars($row['DoctorNote']) . "</td>
-                                </tr>";
-                        }
-                        echo "</tbody></table>";
-                    } else {
-                        echo "<p>No history found for this patient.</p>";
-                    }
-                }
+            get the submit result from the checklist above*/
+            
                 ?>
             </section>
             <?php
