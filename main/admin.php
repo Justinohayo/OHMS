@@ -1,7 +1,7 @@
 <?php
 session_start();
 include("php/config.php");
-include("php/report.php"); 
+include("php/report.php");
 
 // Determine the active section
 $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
@@ -216,6 +216,7 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
             // Collect user input
             $username = $_POST["username"];
             $password = $_POST["password"];
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             $firstname = $_POST["firstname"];
             $lastname = $_POST["lastname"];
             $sex = $_POST["sex"];
@@ -238,7 +239,7 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                 try {
                     // Insert into UserAccount
                     $insert_user = "INSERT INTO UserAccount (UserAccountID, UserType, Username, Password, AccountStatus) 
-                                    VALUES ('$useraccountid', '$usertype', '$username', '$password', 'Approved')";
+                                    VALUES ('$useraccountid', '$usertype', '$username', '$hashedPassword', 'Approved')";
                     if (!mysqli_query($conn, $insert_user)) {
                         throw new Exception("User Account Insert Error: " . mysqli_error($conn));
                     }
@@ -257,11 +258,10 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                         throw new Exception("Address Insert Error: " . mysqli_error($conn));
                     }
         
-                    
                     // Insert into Doctor or Staff 
                     if ($usertype === 'Doctor') {
-                        $insert_doctor = "INSERT INTO doctor (DoctorID, Firstname, Lastname, DOB, Sex, AddressID, ContactID) 
-                                          VALUES ('$doctorid', '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
+                        $insert_doctor = "INSERT INTO doctor (DoctorID, UserAccountID, Firstname, Lastname, DOB, Sex, AddressID, ContactID) 
+                                          VALUES ('$doctorid', '$useraccountid', '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
                         if (!mysqli_query($conn, $insert_doctor)) {
                             throw new Exception("Doctor Insert Error: " . mysqli_error($conn));
                         }
