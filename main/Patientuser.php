@@ -27,6 +27,7 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
         <a href="?section=Prescription" class="<?= $active_section === 'Prescription' ? 'active' : '' ?>">Prescription</a>
         <a href="?section=MyProfile" class="<?= $active_section === 'MyProfile' ? 'active' : '' ?>">My Profile</a>
         <a href="logout.php">Logout</a>
+        <span></span>
     </nav>
 </header>
 
