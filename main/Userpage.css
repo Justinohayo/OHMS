@@ -1,558 +1,600 @@
 *{
-    margin: 0; 
-    padding: 0; 
-    box-sizing: border-box;
-    font-family: 'Times New Roman', Times, serif;
+   margin: 0; 
+   padding: 0; 
+   box-sizing: border-box;
+   font-family: 'Times New Roman', Times, serif;
 }
 
 body{
-   background-color: #50c7c7;
+  background-color: #50c7c7;
 }
 
 
 header{
-   display: flex; 
-   align-items: center;
-   justify-content: space-between;
-   background-color: rgba(202, 240, 248, 0.8);
-   margin: auto; 
+  display: flex; 
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(202, 240, 248, 0.8);
+  margin: auto; 
 }
 
 header p a {
-   text-decoration: none;
-   font-size: 25px; 
-   font-weight: 200;
+  text-decoration: none;
+  font-size: 25px; 
+  font-weight: 200;
 }
 
 .logo{
-   width: 600px;
-   font-size: 25px;
-   font-weight: 500;
-   color:rgba(7, 98, 155, 0.899);
-   text-decoration: none; 
-   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-   padding-left: 30%; 
-   border-radius: 5px; 
-   transition: all 0.3s ease-in-out; 
+  width: 600px;
+  font-size: 25px;
+  font-weight: 500;
+  color:rgba(7, 98, 155, 0.899);
+  text-decoration: none; 
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  padding-left: 30%; 
+  border-radius: 5px; 
+  transition: all 0.3s ease-in-out; 
 }
 
 header{
-   background-color: rgba(202, 240, 248, 0.8);
+  background-color: rgba(202, 240, 248, 0.8);
 } 
 
 nav 
 {
-   position: relative;
-   width: 80%;
-   max-width: 800px; 
-   height: 50px;
-   border-radius: 8px;
-   display: flex;
-   justify-content: space-around;
-   align-items: center;
-   margin: 15px auto;
-   background: none; 
-   margin-top: 10px;
+  position: relative;
+  width: 80%;
+  max-width: 800px; 
+  height: 50px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 15px auto;
+  background: none; 
+  margin-top: 10px;
 }
 
 nav a
 {
-   position: relative;
-   text-align: center;
-   display: inline-block;
-   font-size: 1em;
-   font-weight: 500;
-   color: rgba(7, 98, 155, 0.899);
-   text-decoration: none;
-   padding: 0 23px;
-   background: none;
-   z-index:2;
+  position: relative;
+  text-align: center;
+  display: inline-block;
+  font-size: 1em;
+  font-weight: 500;
+  color: rgba(7, 98, 155, 0.899);
+  text-decoration: none;
+  padding: 0 23px;
+  background: none;
+  z-index:2;
 }
 
 nav span 
 {
-   position: absolute;
-   top: 0;
-   left: 0;
-   width: 12.5%;
-   height: 100%;
-   background: linear-gradient(45deg, #dad616, #33b3d0);
-   border-radius: 8px;
-   transition: 0.5s; /* Smooth transition */
-   z-index: 1; /* Positioned below the links */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12.5%;
+  height: 100%;
+  background: linear-gradient(45deg, #dad616, #33b3d0);
+  border-radius: 8px;
+  transition: 0.5s; /* Smooth transition */
+  z-index: 1; /* Positioned below the links */
 }
 
 /* Hover Effects */
 nav a:nth-child(1):hover ~ span 
 {
-   left: 0;
+  left: 0;
 }
 
 nav a:nth-child(2):hover ~ span {
-   left: 14.5%;
+  left: 14.5%;
 }
 
 nav a:nth-child(3):hover ~ span {
-   left: 33%;
+  left: 33%;
 }
 
 nav a:nth-child(4):hover ~ span {
-   left: 49%;
+  left: 49%;
 }
 
 nav a:nth-child(5):hover ~ span {
-   left: 65.5%;
+  left: 65.5%;
 }
 
 nav a:nth-child(6):hover ~span {
-   left: 84.5%;
+  left: 84.5%;
 }
 
 .flexcontainer{
-   display: flex; 
-   flex-direction: row; 
-   flex-wrap: wrap; 
-   justify-content: center; 
-   align-items: center;
-   gap: 20px; 
-   padding: 20px; 
+  display: flex; 
+  flex-direction: row; 
+  flex-wrap: wrap; 
+  justify-content: center; 
+  align-items: center;
+  gap: 20px; 
+  padding: 20px; 
 
 }
 
 .flexitem {
-   display: flex; 
-   flex-direction: column;
-   justify-content: center; 
-   align-items: flex-start; 
-   height: 200px; 
-   max-width: 600px; 
-   padding: 20px;
-   background-color: white;
-   border-radius: 8px; 
-   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex; 
+  flex-direction: column;
+  justify-content: center; 
+  align-items: flex-start; 
+  height: 200px; 
+  max-width: 600px; 
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .flexitem h4, .flexitem p{
-   margin: 0 0 10px 0;
+  margin: 0 0 10px 0;
 }
 
 .flexitem p{
-   font-size: 1em; 
-   color: #555; 
+  font-size: 1em; 
+  color: #555; 
 }
 
 .flextitem footer{
-   background: none;  
-   justify-content: center; 
+  background: none;  
+  justify-content: center; 
 }
 
 footer{
-   position: absolute;
-   text-align: center; 
-   padding: 20px; 
-   background-color:  rgba(202, 240, 248, 0.8);
-   width: 100%;
-   bottom: 0; 
+  position: absolute;
+  text-align: center; 
+  padding: 20px; 
+  background-color:  rgba(202, 240, 248, 0.8);
+  width: 100%;
+  bottom: 0; 
 }
 
 .pagesection{
-    height: 100%;
+   height: 100%;
 }
 
 /*search bar*/
 
 .searchbar{
-   margin: 20px auto;
-   align-items: center; 
-    position: relative; 
-    width: 20rem; 
-    background: #57bd84; 
-    border-radius: .7rem; 
+  margin: 20px auto;
+  align-items: center; 
+   position: relative; 
+   width: 20rem; 
+   background: #57bd84; 
+   border-radius: .7rem; 
 }
 
 input, button {
-    height: 40px;
-    font-family: 'Lato', sans-serif;
-    border: 0;
-    color: #2f2f2f;
-    font-size: 15px;
-  }
+   height: 40px;
+   font-family: 'Lato', sans-serif;
+   border: 0;
+   color: #2f2f2f;
+   font-size: 15px;
+ }
 
-  input[type="search"] {
-    width: 100%;
-    background: #fff;
-    padding: 0 1.6rem;
-    border-radius: .7em;
-    appearance: none; 
-    transition: all .3s cubic-bezier(0, 0, 0.43, 1.49);
-    transition-property: width, border-radius;
-    z-index: 1;
-    position: relative;
-  }
+ input[type="search"] {
+   width: 100%;
+   background: #fff;
+   padding: 0 1.6rem;
+   border-radius: .7em;
+   appearance: none; 
+   transition: all .3s cubic-bezier(0, 0, 0.43, 1.49);
+   transition-property: width, border-radius;
+   z-index: 1;
+   position: relative;
+ }
 
-  button {
-    display: none; 
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 6rem;
-    font-weight: bold;
-    background: white;
-    border-radius: 0 .7rem .7rem 0;
-  }
-
-  input:not(:placeholder-shown) {
-    border-radius: .7rem 0 0 .7rem;
-    width: calc(100% - 6rem);
-
-  }
-
-  input:not(:placeholder-shown) + button{
-    display: block;
-  }
-
-  label {
-    position: absolute;
-    clip: rect(1px, 1px, 1px, 1px);
-    padding: 0;
-    border: 0;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
-  }
-
-  .page-section{
+ button {
    display: none; 
-  }
+   position: absolute;
+   top: 0;
+   right: 0;
+   width: 6rem;
+   font-weight: bold;
+   background: white;
+   border-radius: 0 .7rem .7rem 0;
+ }
 
-  .page-section.active{
-   display: block; 
-  }
+ input:not(:placeholder-shown) {
+   border-radius: .7rem 0 0 .7rem;
+   width: calc(100% - 6rem);
+
+ }
+
+ input:not(:placeholder-shown) + button{
+   display: block;
+ }
+
+ label {
+   position: absolute;
+   clip: rect(1px, 1px, 1px, 1px);
+   padding: 0;
+   border: 0;
+   height: 1px;
+   width: 1px;
+   overflow: hidden;
+ }
+
+ .page-section{
+  display: none; 
+ }
+
+ .page-section.active{
+  display: block; 
+ }
 
 .tablecontainter{
 
-   position: absolute;
-   top: 50%;
-   left: 50%; 
-   transform: translate(-50%, -50%);
-   width: 90%;
+  position: absolute;
+  top: 50%;
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  width: 90%;
 }
 
 table{
 
-   margin: 0 auto; 
-   width: 100%; 
-   max-width: 1000px;
-   border-collapse: collapse;
-   overflow: hidden; 
-   box-shadow: 0 0 20px rgba(0,0,0,0.1); 
-   color: #073f5c; 
-   border-radius: 8px; 
+  margin: 0 auto; 
+  width: 100%; 
+  max-width: 1000px;
+  border-collapse: collapse;
+  overflow: hidden; 
+  box-shadow: 0 0 20px rgba(0,0,0,0.1); 
+  color: #073f5c; 
+  border-radius: 8px; 
 }
 
 th, td{
-   text-align: left; 
-   background-color: rgba(255,255,255,0.2);
-   padding: 10px; 
+  text-align: left; 
+  background-color: rgba(255,255,255,0.2);
+  padding: 10px; 
 }
 
 thead th{
-   background-color: #33b3d0;
-   color: white; 
-   font-weight: bold; 
+  background-color: #33b3d0;
+  color: white; 
+  font-weight: bold; 
 }
 
 
 tbody{
-   tr{
-      &:hover{
-         background-color: rgba(202, 240, 248, 0.6);
-      }
-   }
+  tr{
+     &:hover{
+        background-color: rgba(202, 240, 248, 0.6);
+     }
+  }
 
-   td {
-      position: relative;
-      &:hover{
-         &before{
-            content: "";
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: -9999px;
-            bottom: -9999px;
-            background-color: rgba(50, 199, 199, 0.3);
-            z-index: -1;
-         }
-      }
-   }
+  td {
+     position: relative;
+     &:hover{
+        &before{
+           content: "";
+           position: absolute;
+           left: 0;
+           right: 0;
+           top: -9999px;
+           bottom: -9999px;
+           background-color: rgba(50, 199, 199, 0.3);
+           z-index: -1;
+        }
+     }
+  }
 }
 
 .tablecontainter table{
-   margin-top: 20px;
+  margin-top: 20px;
 
 }
 
 /* Container for the Create Account Section */
 .containerregister {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   min-height: 90vh; /* Full screen height minus header/footer */
-   background: #50c7c7;
-   width: 100%; 
-   max-width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 90vh; /* Full screen height minus header/footer */
+  background: #50c7c7;
+  width: 100%; 
+  max-width: 600px;
 }
 
 /* Box for Form */
 .box {
-   background: #fdfdfd;
-   display: flex;
-   flex-direction: column;
-   padding: 25px;
-   border-radius: 20px;
-   box-shadow: 0 0 128px 0 rgba(0, 0, 0, 0.1),
-               0 32px 64px -48px rgba(0, 0, 0, 0.5);
-   min-height: 280px;
-   width: 100%;
-   max-width: 600px;
-   box-sizing: border-box;
-   overflow: hidden;
+  background: #fdfdfd;
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 0 128px 0 rgba(0, 0, 0, 0.1),
+              0 32px 64px -48px rgba(0, 0, 0, 0.5);
+  min-height: 280px;
+  width: 100%;
+  max-width: 600px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 form{
-   margin: 20px auto; 
-   position: relative; 
+  margin: 20px auto; 
+  position: relative; 
 }
 
 /* Form Styling */
 .form-box {
-   display: flex;
-   flex-direction: column;
-   width: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .form-box header {
-   font-size: 25px;
-   font-weight: 600;
-   padding-bottom: 10px;
-   border-bottom: 1px solid #e6e6e6;
-   margin-bottom: 20px;
-   color: #073f5c;
-   text-align: center;
-   background: none;
+  font-size: 25px;
+  font-weight: 600;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e6e6e6;
+  margin-bottom: 20px;
+  color: #073f5c;
+  text-align: center;
+  background: none;
 
 }
 
 /* Input Fields Grid */
 .form-box .field {
-   display: grid;
-   grid-template-columns: repeat(2, 1fr);
-   gap: 15px;
-   margin-bottom: 15px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 15px;
 }
 
 /* Full-Width Field */
 .form-box .field.full-width {
-   grid-column: 1/-1;
-   display: flex;
-   justify-content: center;
+  grid-column: 1/-1;
+  display: flex;
+  justify-content: center;
 }
 
 /* Labels */
 .form-box .field label {
-   font-size: 12px;
-   font-weight: 500;
-   color: #333;
-   text-transform: uppercase;
-   letter-spacing: 1px;
-   margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
 }
 
 /* Input Styling */
 .form-box .input input,
 .form-box .input select {
-   height: 40px;
-   width: 100%;
-   font-size: 16px;
-   padding: 0 10px;
-   border-radius: 5px;
-   border: 1px solid #ccc;
-   outline: none;
-   margin-bottom: 5px;
-   background: #fff;
-   transition: all 0.3s ease;
+  height: 40px;
+  width: 100%;
+  font-size: 16px;
+  padding: 0 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  outline: none;
+  margin-bottom: 5px;
+  background: #fff;
+  transition: all 0.3s ease;
 }
 
 .form-box .input input:focus,
 .form-box .input select:focus {
-   border-color: rgba(11, 103, 122, 0.8);
-   box-shadow: 0 0 5px rgba(11, 103, 122, 0.5);
+  border-color: rgba(11, 103, 122, 0.8);
+  box-shadow: 0 0 5px rgba(11, 103, 122, 0.5);
 }
 
 /* Submit Button */
 .form-box .btn {
-   height: 40px;
-   background: rgba(11, 103, 122, 0.8);
-   border: none;
-   border-radius: 5px;
-   color: #fff;
-   font-size: 15px;
-   cursor: pointer;
-   transition: all 0.3s ease;
-   text-align: center;
-   margin: 20px auto;
-   width: 100%;
-   max-width: 200px;
+  height: 40px;
+  background: rgba(11, 103, 122, 0.8);
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  margin: 20px auto;
+  width: 100%;
+  max-width: 200px;
 }
 
 .form-box .btn:hover {
-   background: rgba(11, 103, 122, 0.9);
-   transform: translateY(-2px);
+  background: rgba(11, 103, 122, 0.9);
+  transform: translateY(-2px);
 }
 
 .form-box .btn:active {
-   background: rgba(11, 103, 122, 0.7);
-   transform: translateY(1px);
+  background: rgba(11, 103, 122, 0.7);
+  transform: translateY(1px);
 }
 
 /* Links */
 .form-box .links {
-   text-align: center;
-   margin-top: 15px;
-   font-size: 0.9em;
-   color: #555;
+  text-align: center;
+  margin-top: 15px;
+  font-size: 0.9em;
+  color: #555;
 }
 
 .form-box .links a {
-   color: rgba(11, 103, 122, 0.8);
-   text-decoration: none;
-   font-weight: bold;
+  color: rgba(11, 103, 122, 0.8);
+  text-decoration: none;
+  font-weight: bold;
 }
 
 .form-box .links a:hover {
-   text-decoration: underline;
+  text-decoration: underline;
 }
 
 /* Responsive Design */
 @media (max-width: 600px) {
-   .form-box .field {
-       grid-template-columns: 1fr;
-   }
+  .form-box .field {
+      grid-template-columns: 1fr;
+  }
 
-   .form-box .btn {
-       width: 100%;
-   }
+  .form-box .btn {
+      width: 100%;
+  }
 }
 
 #CreateAccount form{
-   width: 100%;
-   max-width: 550px;
+  width: 100%;
+  max-width: 550px;
 }
 
 
 .message{
-   text-align: center;
-   background: #f9eded;
-   padding: 15px 0px;
-   border: 1px solid #699053;
-   border-radius: 5px; 
-   color: red;
+  text-align: center;
+  background: #f9eded;
+  padding: 15px 0px;
+  border: 1px solid #699053;
+  border-radius: 5px; 
+  color: red;
 }
 
 /*==============REPORT SECTION ===================*/ 
 
 #Reports{
-   display: flex; 
-   flex-direction: column;
-   padding: 20px; 
-   background-color:#33b3d0;;
-   width: 100%; 
-   max-width: 600px; 
-   margin: 20px auto;
-   border-radius: 10px; 
+  display: flex; 
+  flex-direction: column;
+  padding: 20px; 
+  background-color:#33b3d0;;
+  width: 100%; 
+  max-width: 600px; 
+  margin: 20px auto;
+  border-radius: 10px; 
 }
 
 #Reports h2{
-   margin: 10px; 
+  margin: 10px; 
 }
 
 #Reports .general-report,
 #Reports .yearly-report{
-   background: #ffffff; 
-   padding: 20px; 
-   border-radius: 10px; 
-   box-shadow:  0 4px 8px rgba(0, 0, 0, 0.1);
-   margin-bottom: 20px; 
+  background: #ffffff; 
+  padding: 20px; 
+  border-radius: 10px; 
+  box-shadow:  0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; 
 }
 
 #Reports .general-report h3,
 #Reports .yearly-report h3
 {
-   font-size: 1.5em; 
-   color: #0056b3; 
-   margin-bottom: 10px; 
-   border-bottom: 2px solid #33b3d0; 
-   padding-bottom: 5px; 
+  font-size: 1.5em; 
+  color: #0056b3; 
+  margin-bottom: 10px; 
+  border-bottom: 2px solid #33b3d0; 
+  padding-bottom: 5px; 
 }
 
 #Reports .general-report p,
 #Reports .yearly-report p{
-    font-size: 1em; 
-    color: #555; 
-    margin: 5px 0; 
+   font-size: 1em; 
+   color: #555; 
+   margin: 5px 0; 
 }
 
 #Reports form{
-   margin-top: 10px; 
-   display: flex; 
-   align-items: center; 
-   gap: 10px; 
+  margin-top: 10px; 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
 }
 
 /*???????????????????????????????????*/
 #Reports form label{
-   font-size: 1em; 
-   color: #073f5c; 
-   font-weight: bold; 
+  font-size: 1em; 
+  color: #073f5c; 
+  font-weight: bold; 
 }
 
 #Reports form .patientbar{
-   flex:1; 
-   height: 40px; 
-   padding: 0 10px; 
-   font-size: 1em; 
-   border: 1px solid #ccc; 
-   outline: none; 
-   transition: border-color 0.3s ease;
-   border-radius: 5px; 
-   transition: all .3s cubic-bezier(0,0,0.43,1.49);
-   transition-property: border-color, box-shadow, width, border-radius;
- 
+  flex:1; 
+  height: 40px; 
+  padding: 0 10px; 
+  font-size: 1em; 
+  border: 1px solid #ccc; 
+  outline: none; 
+  transition: border-color 0.3s ease;
+  border-radius: 5px; 
+  transition: all .3s cubic-bezier(0,0,0.43,1.49);
+  transition-property: border-color, box-shadow, width, border-radius;
+
 
 }
 
 #Reports form .patientbar:focus{
-   border-color: #33b3d0; 
-   box-shadow: 0 0 5px rgba(50,199,199,0.5);
+  border-color: #33b3d0; 
+  box-shadow: 0 0 5px rgba(50,199,199,0.5);
 }
 
 #Reports form button{
-   background: linear-gradient(45deg, #33b3d0, #0056b3);
-   color: white; 
-   padding: 10px 20px; 
-   font-size: 1em; 
-   font-weight: bold; 
-   border: none;
-   border-radius: 5px; 
-   cursor: pointer; 
+  background: linear-gradient(45deg, #33b3d0, #0056b3);
+  color: white; 
+  padding: 10px 20px; 
+  font-size: 1em; 
+  font-weight: bold; 
+  border: none;
+  border-radius: 5px; 
+  cursor: pointer; 
 }
 
 #Reports form button:hover{
-   background: linear-gradient(45deg, #0056b3, #004085); 
-   transform: translateY(-2px);
-   box-shadow: 0 6px 10px rgba(0,0,0,0.2); 
+  background: linear-gradient(45deg, #0056b3, #004085); 
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.2); 
 }
 
 #Reports :input:not(:placeholder-shown) + button {
-   display: block;
+  display: block;
 }
+
+
+/*==============================DOCTOR PAGE=======================*/
+
+
+nav span.doctormenu
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 14.5%;
+  height: 100%;
+  background: linear-gradient(45deg, #dad616, #33b3d0);
+  border-radius: 8px;
+  transition: 0.5s; /* Smooth transition */
+  z-index: 1; /* Positioned below the links */
+}
+
+
+/* Hover Effects */
+nav.doctor a:nth-child(1):hover ~ span 
+{
+  left: 2%;
+}
+
+nav.doctor a:nth-child(2):hover ~ span {
+  left: 22%;
+}
+
+nav.doctor a:nth-child(3):hover ~ span {
+  left: 45.6%;
+}
+
+nav.doctor a:nth-child(4):hover ~ span{
+  left: 65.5%;
+}
+
+nav.doctor a:nth-child(5):hover ~ span{
+  left: 84%;
+}
+
+
