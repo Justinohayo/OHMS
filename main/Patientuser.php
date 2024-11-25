@@ -153,7 +153,7 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                     <p><strong>Phone:</strong> <?= htmlspecialchars($profile_row['Phone']) ?></p>
                     <p><strong>Email:</strong> <?= htmlspecialchars($profile_row['Email']) ?></p>
 
-                    <button id="modifyProfileBtn">Modify Details</button>
+                    <button>Modify Details</button>
 
                     <!-- Modify Profile Form (Initially hidden) -->
                     <form id="modifyProfileForm" style="display:none;" method="POST" action="update_profile.php">
