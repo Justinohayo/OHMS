@@ -46,6 +46,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['TestResults'])) {
             }
         }
 
+        // If the test is a Urine Test, insert the urine test data
+        if ($test_type == 'Urine Test') {
+            // Generate UrineTestResultID (e.g., UT000001)
+            $urine_test_id = 'UT' . str_pad($test_result_id, 6, '0', STR_PAD_LEFT);
+
+            // Prepare the urine test data
+            $ph_level = isset($test_results['PH Level']) ? $test_results['PH Level'] : '';
+            $glucose_level = isset($test_results['Glucose Level']) ? $test_results['Glucose Level'] : '';
+            $urea = isset($test_results['Urea']) ? $test_results['Urea'] : '';
+            $gravity = isset($test_results['Gravity']) ? $test_results['Gravity'] : '';
+            $creatinine = isset($test_results['Creatinine']) ? $test_results['Creatinine'] : '';
+
+            // Insert the Urine Test Results into UrineTestResult
+            $query = "INSERT INTO UrineTestResult (UrineTestResultID, TestResultID, PHLevel, GlucoseLevel, Urea, Gravity, Creatinine) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param('ssssddds', $urine_test_id, $test_result_id, $ph_level, $glucose_level, $urea, $gravity, $creatinine);
+            $stmt->execute();
+        }
+
         echo "<p>Test results saved successfully!</p>";
     }
 }
@@ -66,41 +86,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['TestResults'])) {
 
             var testAttributes = [];
             switch (testType) {
-                case 'Routine Hematology':
-                    testAttributes = ['Hemoglobin Level (g/dL)', 'WBC Count (cells/mcL)', 'Platelet Count (cells/mcL)'];
-                    break;
-                case 'Coagulation':
-                    testAttributes = ['PT (sec)', 'INR', 'APTT (sec)'];
-                    break;
-                case 'Routine Chemistry':
-                    testAttributes = ['Glucose (mg/dL)', 'Creatinine (mg/dL)', 'Cholesterol (mg/dL)', 'Electrolytes (mmol/L)'];
-                    break;
                 case 'Renal Function':
-                    testAttributes = ['eGFR (mL/min/1.73m2)', 'BUN (mg/dL)', 'Creatinine (mg/dL)'];
+                    testAttributes = [
+                        'GFR Rate', 'Serum Creatinine', 'Uric Acid', 'Sodium', 'Blood Urea Nitrogen'
+                    ];
                     break;
                 case 'Liver Function':
-                    testAttributes = ['AST (U/L)', 'ALT (U/L)', 'Bilirubin (mg/dL)'];
+                    testAttributes = [
+                        'Alanine Aminotransferase', 'Albumin', 'Alkaline Phosphatase', 'Aspartate Aminotransferase', 'Conjugated Bilirubin'
+                    ];
                     break;
-                case 'Pancreas Function':
-                    testAttributes = ['Amylase (U/L)', 'Lipase (U/L)'];
+                case 'Routine Hematology':
+                    testAttributes = [
+                        'MCV', 'Lymphocyte', 'RBC', 'Platelets', 'WBC'
+                    ];
                     break;
-                case 'Endocrinology':
-                    testAttributes = ['TSH (mU/L)', 'Free T4 (ng/dL)', 'Free T3 (pg/mL)'];
+                case 'Coagulation':
+                    testAttributes = [
+                        'Bleeding Time', 'Clotting Time', 'Prothrombin Time', 'INR'
+                    ];
+                    break;
+                case 'Routine Chemistry':
+                    testAttributes = [
+                        'Calcium Ions', 'Potassium Ions', 'Sodium Ions', 'Bicarbonate', 'Chloride Ions'
+                    ];
                     break;
                 case 'Tumor Markers':
-                    testAttributes = ['CA-125 (U/mL)', 'PSA (ng/mL)', 'AFP (ng/mL)'];
+                    testAttributes = [
+                        'Cancer Antigen', 'CA 27-29', 'CA 125', 'Carcinoembryonic Antigen', 'Circulating Tumor Cells'
+                    ];
                     break;
-                case 'ECG':
-                    testAttributes = ['Heart Rate (bpm)', 'ECG Findings'];
+                case 'Endocrinology':
+                    testAttributes = [
+                        'Throtropin', 'Testosterone', 'Growth Hormone', 'Insulin', 'Cortisol'
+                    ];
                     break;
-                case 'X-Ray':
-                    testAttributes = ['Findings (Description)', 'Location'];
+                case 'Pancreas Function':
+                    testAttributes = [
+                        'Insulin', 'Fasting Glucose', 'Lipase', 'Amylase', 'C-Peptide'
+                    ];
                     break;
-                case 'CT Scan':
-                    testAttributes = ['Findings (Description)', 'Location', 'Scan Type'];
-                    break;
-                case 'Ultrasound':
-                    testAttributes = ['Findings (Description)', 'Location', 'Scan Type'];
+                case 'Urine Test':
+                    testAttributes = [
+                        'PH Level', 'Glucose Level', 'Urea', 'Gravity', 'Creatinine'
+                    ];
                     break;
                 default:
                     testAttributes = [];
@@ -152,7 +181,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['TestResults'])) {
         <a href="?section=ModifyTestResults" class="<?= $active_section === 'ModifyTestResults' ? 'active' : '' ?>">Modify Test Results</a>
         <a href="?section=MyProfile" class="<?= $active_section === 'MyProfile' ? 'active' : '' ?>">My Profile</a>
         <a href="logout.php">Logout</a>
-        <span></span>
     </nav>
 </header>
 
@@ -174,42 +202,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['TestResults'])) {
                 // If patient ID is selected and found, display the form for test type selection
                 if ($patient_selected && isset($patient)) {
                     echo "<h3>Selected Patient: " . htmlspecialchars($patient['FullName']) . "</h3>";
-
-                    // Display the test type selection
                     ?>
-                    <form method="POST" action="?section=CreateTestResults" onsubmit="generateTestFields()">
-                        <input type="hidden" name="PatientID" value="<?= htmlspecialchars($patient['PatientID']) ?>">
-                        <label for="TestType">Test Type</label>
-                        <select id="TestType" name="TestType" onchange="generateTestFields()" required>
-                            <option value="">-- Select Test Type --</option>
-                            <option value="Routine Hematology" <?= $test_selected == 'Routine Hematology' ? 'selected' : '' ?>>Routine Hematology</option>
-                            <option value="Coagulation" <?= $test_selected == 'Coagulation' ? 'selected' : '' ?>>Coagulation</option>
-                            <option value="Routine Chemistry" <?= $test_selected == 'Routine Chemistry' ? 'selected' : '' ?>>Routine Chemistry</option>
-                            <option value="Renal Function" <?= $test_selected == 'Renal Function' ? 'selected' : '' ?>>Renal Function</option>
-                            <option value="Liver Function" <?= $test_selected == 'Liver Function' ? 'selected' : '' ?>>Liver Function</option>
-                            <option value="Pancreas Function" <?= $test_selected == 'Pancreas Function' ? 'selected' : '' ?>>Pancreas Function</option>
-                            <option value="Endocrinology" <?= $test_selected == 'Endocrinology' ? 'selected' : '' ?>>Endocrinology</option>
-                            <option value="Tumor Markers" <?= $test_selected == 'Tumor Markers' ? 'selected' : '' ?>>Tumor Markers</option>
-                            <option value="ECG" <?= $test_selected == 'ECG' ? 'selected' : '' ?>>ECG</option>
-                            <option value="X-Ray" <?= $test_selected == 'X-Ray' ? 'selected' : '' ?>>X-Ray</option>
-                            <option value="CT Scan" <?= $test_selected == 'CT Scan' ? 'selected' : '' ?>>CT Scan</option>
-                            <option value="Ultrasound" <?= $test_selected == 'Ultrasound' ? 'selected' : '' ?>>Ultrasound</option>
-                        </select>
 
-                        <div id="TestResults"></div> <!-- Test result inputs will be dynamically added here -->
+                    <form method="POST" action="?section=CreateTestResults">
+                        <input type="hidden" name="PatientID" value="<?= htmlspecialchars($patient_selected) ?>">
+
+                        <label for="TestType">Select Test Type: </label>
+                        <select name="TestType" id="TestType" onchange="generateTestFields()" required>
+                            <option value="">--Select--</option>
+                            <option value="Renal Function">Renal Function</option>
+                            <option value="Liver Function">Liver Function</option>
+                            <option value="Routine Hematology">Routine Hematology</option>
+                            <option value="Coagulation">Coagulation</option>
+                            <option value="Routine Chemistry">Routine Chemistry</option>
+                            <option value="Tumor Markers">Tumor Markers</option>
+                            <option value="Endocrinology">Endocrinology</option>
+                            <option value="Pancreas Function">Pancreas Function</option>
+                            <option value="Urine Test">Urine Test</option>
+                        </select>
+                        
+                        <div id="TestResults"></div>
 
                         <button type="submit">Save Test Results</button>
                     </form>
-                </section>
-                <?php
+                    <?php
                 }
-                break;
-
+                ?>
+            </section>
+            <?php
+            break;
         default:
-            echo "<h2>Welcome to the OHMS System</h2>";
+            echo "<h1>Welcome to the OHMS System</h1>";
             break;
     }
     ?>
 </main>
+
+<footer>
+    <p>&copy; 2024 OHMS. All Rights Reserved.</p>
+</footer>
 </body>
 </html>
