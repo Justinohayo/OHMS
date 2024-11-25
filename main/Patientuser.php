@@ -2,7 +2,15 @@
 session_start();
 include("php/config.php");
 
-// Determine the active section
+// Ensure the user is logged in
+if (!isset($_SESSION['PatientID'])) {
+    echo "<p>You are not logged in. Please log in to view your prescriptions.</p>";
+    exit();
+}
+
+
+
+$current_patient_id = $_SESSION['PatientID'];
 $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
 ?>
 
@@ -11,37 +19,28 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="Userpage.css">
-    <title>OHMS - Doctor Portal</title>
+    <title>OHMS - Patient Portal</title>
 </head>
 <body>
 <header>
     <p><a href="index.html" class="logo">OHMS</a></p>
     <nav class="user">
         <a href="?section=home" class="<?= $active_section === 'home' ? 'active' : '' ?>">Home</a>
-       
         <a href="?section=Prescription" class="<?= $active_section === 'Prescription' ? 'active' : '' ?>">Prescription</a>
         <a href="?section=MyProfile" class="<?= $active_section === 'MyProfile' ? 'active' : '' ?>">My Profile</a>
         <a href="logout.php">Logout</a>
-        <span></span>
     </nav>
 </header>
-
-
 
 <main>
     <?php
     switch ($active_section) {
-       
-            
         case 'Prescription':
             ?>
             <section id="Prescription">
                 <h2>Prescriptions</h2>
         
                 <?php
-                // Get the currently logged-in patient's ID from the session
-                $current_patient_id = $_SESSION['PatientID'];
-        
                 // Query for Assigned Blood Tests for the logged-in patient
                 $blood_test_query = "SELECT * FROM assignedbloodtest WHERE PatientID = ?";
                 $stmt_blood_test = $conn->prepare($blood_test_query);
@@ -116,25 +115,26 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
             <?php
             break;
 
-
-            
         case 'MyProfile':
             ?>
             <section id="MyProfile">
                 <h2>My Profile</h2>
                 <?php
-                $doctor_id = $_SESSION['PatienID']; // Assuming doctor ID is stored in session
-                $query = "SELECT * FROM doctor WHERE PatienID = '$doctor_id'";
-                $result = mysqli_query($conn, $query);
+                // Query for patient profile information
+                $profile_query = "SELECT * FROM Patient WHERE PatientID = ?";
+                $stmt_profile = $conn->prepare($profile_query);
+                $stmt_profile->bind_param("i", $current_patient_id);
+                $stmt_profile->execute();
+                $profile_result = $stmt_profile->get_result();
 
-                if ($result && mysqli_num_rows($result) > 0) {
-                    $doctor = mysqli_fetch_assoc($result);
-                    echo "<p><strong>Name:</strong> " . htmlspecialchars($patient['Firstname'] . ' ' . $patient['Lastname']) . "</p>";
-                    echo "<p><strong>Email:</strong> " . htmlspecialchars($patient['Email']) . "</p>";
-                    echo "<p><strong>Phone:</strong> " . htmlspecialchars($patient['Phone']) . "</p>";
-                    echo "<p><strong>Specialization:</strong> " . htmlspecialchars($patient['Specialization']) . "</p>";
+                if ($profile_result && $profile_result->num_rows > 0) {
+                    $profile_row = $profile_result->fetch_assoc();
+                    echo "<p><strong>Name:</strong> " . htmlspecialchars($profile_row['FirstName']) . " " . htmlspecialchars($profile_row['LastName']) . "</p>";
+                    echo "<p><strong>Date of Birth:</strong> " . htmlspecialchars($profile_row['DateOfBirth']) . "</p>";
+                    echo "<p><strong>Gender:</strong> " . htmlspecialchars($profile_row['Gender']) . "</p>";
+                    echo "<p><strong>Contact Info:</strong> " . htmlspecialchars($profile_row['ContactNumber']) . "</p>";
                 } else {
-                    echo "<p>Profile information not found.</p>";
+                    echo "<p>No profile data available.</p>";
                 }
                 ?>
             </section>
@@ -144,9 +144,11 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
         default:
             ?>
             <section id="home">
-                <h2>Welcome, Patient, to the Online Health Monitor Systxem</h2>
+                <h2>Welcome to your Patient Portal</h2>
+                <p>Here you can view your prescriptions and profile information.</p>
             </section>
             <?php
+            break;
     }
     ?>
 </main>
