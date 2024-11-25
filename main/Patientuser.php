@@ -24,7 +24,7 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
 <header>
     <p><a href="index.html" class="logo">OHMS</a></p>
     <nav class="user">
-        <a href="?section=home" class="<?= $active_section === 'home' ? 'active' : '' ?>">Home</a>
+        <a href="?section=home" class="<?= $active_section === 'Home' ? 'active' : '' ?>">Home</a>
         <a href="?section=Prescription" class="<?= $active_section === 'Prescription' ? 'active' : '' ?>">Prescription</a>
         <a href="?section=MyProfile" class="<?= $active_section === 'MyProfile' ? 'active' : '' ?>">My Profile</a>
         <a href="logout.php">Logout</a>
@@ -37,87 +37,94 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
     switch ($active_section) {
         case 'Prescription':
             ?>
-            <section id="Prescription">
-                <h2>Prescriptions</h2>
-        
-                <?php
-                // Query for Assigned Blood Tests for the logged-in patient
-                $blood_test_query = "SELECT * FROM assignedbloodtest WHERE PatientID = " . (int)$current_patient_id; 
-                $blood_test_result = mysqli_query($conn, $blood_test_query);
+          <section id="Prescription">
+    <h2>Prescriptions</h2>
 
-                if (!$blood_test_result) {
-                    die("Query failed: " . mysqli_error($conn));
-                }
+    <?php
+    // Query for Assigned Blood Tests for the logged-in patient, including patient name
+    $blood_test_query = "
+        SELECT abt.AssignedBloodTestID, p.Firstname, p.Lastname, abt.DoctorID, abt.DateAssigned, abt.BloodTestType 
+        FROM assignedbloodtest abt
+        JOIN Patient p ON abt.PatientID = p.PatientID
+        WHERE abt.PatientID = ?";
+    $stmt_blood_test = $conn->prepare($blood_test_query);
+    $stmt_blood_test->bind_param("i", $current_patient_id);
+    $stmt_blood_test->execute();
+    $blood_test_result = $stmt_blood_test->get_result();
 
-                // Query for Assigned General Tests for the logged-in patient
-                $assigned_test_query = "SELECT * FROM assignedtest WHERE PatientID = " . (int)$current_patient_id; 
-                $assigned_test_result = mysqli_query($conn, $assigned_test_query);
+    // Query for Assigned General Tests for the logged-in patient, including patient name
+    $assigned_test_query = "
+        SELECT at.AssignedTestID, p.Firstname, p.Lastname, at.DoctorID, at.DateAssigned, at.TestType 
+        FROM assignedtest at
+        JOIN Patient p ON at.PatientID = p.PatientID
+        WHERE at.PatientID = ?";
+    $stmt_assigned_test = $conn->prepare($assigned_test_query);
+    $stmt_assigned_test->bind_param("i", $current_patient_id);
+    $stmt_assigned_test->execute();
+    $assigned_test_result = $stmt_assigned_test->get_result();
+    ?>
 
-                if (!$assigned_test_result) {
-                    die("Query failed: " . mysqli_error($conn));
-                }
-                ?>
+    <!-- Display Assigned Blood Tests -->
+    <h3>Assigned Blood Tests</h3>
+    <?php
+    if ($blood_test_result->num_rows > 0) {
+        echo "<table>
+                <thead>
+                    <tr>
+                        <th>AssignedBloodTestID</th>
+                        <th>Patient Name</th>
+                        <th>DoctorID</th>
+                        <th>DateAssigned</th>
+                        <th>BloodTestType</th>
+                    </tr>
+                </thead>
+                <tbody>";
+        while ($row = $blood_test_result->fetch_assoc()) {
+            echo "<tr>
+                    <td>" . htmlspecialchars($row['AssignedBloodTestID']) . "</td>
+                    <td>" . htmlspecialchars($row['Firstname']) . " " . htmlspecialchars($row['Lastname']) . "</td>
+                    <td>" . htmlspecialchars($row['DoctorID']) . "</td>
+                    <td>" . htmlspecialchars($row['DateAssigned']) . "</td>
+                    <td>" . htmlspecialchars($row['BloodTestType']) . "</td>
+                </tr>";
+        }
+        echo "</tbody></table>";
+    } else {
+        echo "<p>No blood tests assigned yet.</p>";
+    }
+    ?>
 
-                <!-- Display Assigned Blood Tests -->
-                <h3>Assigned Blood Tests</h3>
-                <?php
-                if (mysqli_num_rows($blood_test_result) > 0) {
-                    echo "<table>
-                            <thead>
-                                <tr>
-                                    <th>AssignedBloodTestID</th>
-                                    <th>PatientID</th>
-                                    <th>DoctorID</th>
-                                    <th>DateAssigned</th>
-                                    <th>BloodTestType</th>
-                                </tr>
-                            </thead>
-                            <tbody>";
-                    while ($row = mysqli_fetch_assoc($blood_test_result)) {
-                        echo "<tr>
-                                <td>" . htmlspecialchars($row['AssignedBloodTestID']) . "</td>
-                                <td>" . htmlspecialchars($row['PatientID']) . "</td>
-                                <td>" . htmlspecialchars($row['DoctorID']) . "</td>
-                                <td>" . htmlspecialchars($row['DateAssigned']) . "</td>
-                                <td>" . htmlspecialchars($row['BloodTestType']) . "</td>
-                            </tr>";
-                    }
-                    echo "</tbody></table>";
-                } else {
-                    echo "<p>No blood tests assigned yet.</p>";
-                }
-                ?>
+    <!-- Display Assigned General Tests -->
+    <h3>Assigned General Tests</h3>
+    <?php
+    if ($assigned_test_result->num_rows > 0) {
+        echo "<table>
+                <thead>
+                    <tr>
+                        <th>AssignedTestID</th>
+                        <th>Patient Name</th>
+                        <th>DoctorID</th>
+                        <th>DateAssigned</th>
+                        <th>TestType</th>
+                    </tr>
+                </thead>
+                <tbody>";
+        while ($row = $assigned_test_result->fetch_assoc()) {
+            echo "<tr>
+                    <td>" . htmlspecialchars($row['AssignedTestID']) . "</td>
+                    <td>" . htmlspecialchars($row['Firstname']) . " " . htmlspecialchars($row['Lastname']) . "</td>
+                    <td>" . htmlspecialchars($row['DoctorID']) . "</td>
+                    <td>" . htmlspecialchars($row['DateAssigned']) . "</td>
+                    <td>" . htmlspecialchars($row['TestType']) . "</td>
+                </tr>";
+        }
+        echo "</tbody></table>";
+    } else {
+        echo "<p>No general tests assigned yet.</p>";
+    }
+    ?>
+</section>
 
-                <!-- Display Assigned General Tests -->
-                <h3>Assigned General Tests</h3>
-                <?php
-                if (mysqli_num_rows($assigned_test_result) > 0) {
-                    echo "<table>
-                            <thead>
-                                <tr>
-                                    <th>AssignedTestID</th>
-                                    <th>PatientID</th>
-                                    <th>DoctorID</th>
-                                    <th>DateAssigned</th>
-                                    <th>TestType</th>
-                                </tr>
-                            </thead>
-                            <tbody>";
-                    while ($row = mysqli_fetch_assoc($assigned_test_result)) {
-                        echo "<tr>
-                                <td>" . htmlspecialchars($row['AssignedTestID']) . "</td>
-                                <td>" . htmlspecialchars($row['PatientID']) . "</td>
-                                <td>" . htmlspecialchars($row['DoctorID']) . "</td>
-                                <td>" . htmlspecialchars($row['DateAssigned']) . "</td>
-                                <td>" . htmlspecialchars($row['TestType']) . "</td>
-                            </tr>";
-                    }
-                    echo "</tbody></table>";
-                } else {
-                    echo "<p>No general tests assigned yet.</p>";
-                }
-                ?>
-            </section>
             <?php
             break;
 
@@ -146,7 +153,7 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                     <p><strong>Phone:</strong> <?= htmlspecialchars($profile_row['Phone']) ?></p>
                     <p><strong>Email:</strong> <?= htmlspecialchars($profile_row['Email']) ?></p>
 
-                    <button id="modifyProfileBtn">Modify Details</button>
+                    <button>Modify Details</button>
 
                     <!-- Modify Profile Form (Initially hidden) -->
                     <form id="modifyProfileForm" style="display:none;" method="POST" action="update_profile.php">
