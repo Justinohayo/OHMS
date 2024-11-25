@@ -2,8 +2,9 @@
 session_start();
 include("php/config.php");
 
+
 // Ensure the user is logged in
-if (!isset($_SESSION['PatientID'])) {
+if (!isset($_SESSION['userid'])) {
     echo "<p>You are not logged in. Please log in to view your portal.</p>";
     exit();
 }

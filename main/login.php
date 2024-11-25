@@ -21,6 +21,7 @@ if (isset($_POST['submit'])) {
         if (password_verify($password, $row['Password'])) {
             $_SESSION['userid'] = $row['UserAccountID']; // Store user ID in session
 
+<<<<<<< HEAD
             if (password_verify($password, $row['Password'])) {
                 $_SESSION['UserAccountID'] = $row['UserAccountID']; // Store UserAccountID in session
             
@@ -62,6 +63,54 @@ if (isset($_POST['submit'])) {
                         $_SESSION['StaffID'] = $staff_row['StaffID'];
                     }
                 }
+=======
+            // Add the following block to store PatientID for patients
+            if ($row['UserType'] === 'Patient') {
+                $patient_query = "SELECT PatientID FROM patient WHERE UserAccountID = ?";
+                $stmt = $conn->prepare($patient_query);
+                $stmt->bind_param("i", $row['UserAccountID']);
+                $stmt->execute();
+                $patient_result = $stmt->get_result();
+                
+                if ($patient_result && $patient_result->num_rows > 0) {
+                    $patient_row = $patient_result->fetch_assoc();
+                    $_SESSION['PatientID'] = $patient_row['PatientID']; // Store PatientID in session
+                }else {
+                    echo "<div class='message'><p>Unable to retrieve PatientID. Please contact support.</p></div>";
+                    exit();
+                }
+            }
+                if ($row['UserType'] === 'Doctor') {
+                    $doctor_query = "SELECT DoctorID FROM doctor WHERE UserAccountID = ?";
+                    $stmt = $conn->prepare($doctor_query);
+                    $stmt->bind_param("s", $row['UserAccountID']);
+                    $stmt->execute();
+                    $doctor_result = $stmt->get_result();
+                    
+                    if ($doctor_result && $doctor_result->num_rows > 0) {
+                        $doctor_row = $doctor_result->fetch_assoc();
+                        $_SESSION['DoctorID'] = $doctor_row['DoctorID']; // Store DoctorID in session
+                    } else {
+                        echo "<div class='message'><p>Unable to retrieve DoctorID. Please contact support.</p></div>";
+                        exit();
+                    }
+                }
+                if ($row['UserType'] === 'Staff') {
+                    $doctor_query = "SELECT StaffID FROM patient WHERE UserAccountID = ?";
+                    $stmt = $conn->prepare($doctor_query);
+                    $stmt->bind_param("s", $row['UserAccountID']);
+                    $stmt->execute();
+                    $doctor_result = $stmt->get_result();
+                    
+                    if ($doctor_result && $doctor_result->num_rows > 0) {
+                        $doctor_row = $doctor_result->fetch_assoc();
+                        $_SESSION['DoctorID'] = $doctor_row['DoctorID']; // Store DoctorID in session
+                    } else {
+                        echo "<div class='message'><p>Unable to retrieve StaffID. Please contact support.</p></div>";
+                        exit();
+                    }
+                }
+>>>>>>> 85c8aa4a4a145438fab961ef82e44dee9e799401
 
             // Redirect based on UserType
             switch ($row['UserType']) {

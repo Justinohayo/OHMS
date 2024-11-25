@@ -2,58 +2,51 @@
 session_start();
 require_once("php/config.php");
 
-// Determine the active section
+// Initialize variables
 $active_section = isset($_GET['section']) ? htmlspecialchars($_GET['section']) : 'home';
-
-// Check if the patient has been selected
-$patient_selected = isset($_POST['PatientID']) ? htmlspecialchars($_POST['PatientID']) : 
-    (isset($_GET['PatientID']) ? htmlspecialchars($_GET['PatientID']) : '');
-
-// Check if the test type is selected
+$patient_selected = isset($_POST['PatientID']) ? htmlspecialchars($_POST['PatientID']) : '';
 $test_selected = isset($_POST['TestType']) ? htmlspecialchars($_POST['TestType']) : '';
 
-// Get the attributes based on the selected test type
-$test_attributes = [];
-if ($test_selected) {
-    switch ($test_selected) {
-        case 'Routine Hematology':
-            $test_attributes = ['Hemoglobin Level (g/dL)', 'WBC Count (cells/mcL)', 'Platelet Count (cells/mcL)'];
-            break;
-        case 'Coagulation':
-            $test_attributes = ['PT (sec)', 'INR', 'APTT (sec)'];
-            break;
-        case 'Routine Chemistry':
-            $test_attributes = ['Glucose (mg/dL)', 'Creatinine (mg/dL)', 'Cholesterol (mg/dL)', 'Electrolytes (mmol/L)'];
-            break;
-        case 'Renal Function':
-            $test_attributes = ['eGFR (mL/min/1.73m2)', 'BUN (mg/dL)', 'Creatinine (mg/dL)'];
-            break;
-        case 'Liver Function':
-            $test_attributes = ['AST (U/L)', 'ALT (U/L)', 'Bilirubin (mg/dL)'];
-            break;
-        case 'Pancreas Function':
-            $test_attributes = ['Amylase (U/L)', 'Lipase (U/L)'];
-            break;
-        case 'Endocrinology':
-            $test_attributes = ['TSH (mU/L)', 'Free T4 (ng/dL)', 'Free T3 (pg/mL)'];
-            break;
-        case 'Tumor Markers':
-            $test_attributes = ['CA-125 (U/mL)', 'PSA (ng/mL)', 'AFP (ng/mL)'];
-            break;
-        case 'ECG':
-            $test_attributes = ['Heart Rate (bpm)', 'ECG Findings'];
-            break;
-        case 'X-Ray':
-            $test_attributes = ['Findings (Description)', 'Location'];
-            break;
-        case 'CT Scan':
-            $test_attributes = ['Findings (Description)', 'Location', 'Scan Type'];
-            break;
-        case 'Ultrasound':
-            $test_attributes = ['Findings (Description)', 'Location', 'Scan Type'];
-            break;
-        default:
-            $test_attributes = [];
+// Fetch Patient Information if Patient ID is set
+if ($patient_selected) {
+    $query = "SELECT PatientID, CONCAT(Firstname, ' ', Lastname) AS FullName FROM patient WHERE PatientID = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('s', $patient_selected);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $patient = $result->fetch_assoc();
+}
+
+// Handle form submission for test results
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['TestResults'])) {
+    if (empty($patient_selected) || empty($test_selected)) {
+        echo "<p style='color:red;'>Patient or Test Type is not selected. Please select both.</p>";
+    } else {
+        // Sanitize input and capture the test results
+        $test_results = $_POST['TestResults'];
+        $patient_id = $patient_selected;
+        $test_type = $test_selected;
+
+        // Insert the test result into the test_results table
+        $query = "INSERT INTO test_results (PatientID, TestType) VALUES (?, ?)";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('ss', $patient_id, $test_type);
+        $stmt->execute();
+
+        // Get the last inserted TestResultID
+        $test_result_id = $stmt->insert_id;
+
+        // Insert each test attribute into the test_result_details table
+        foreach ($test_results as $attribute => $value) {
+            if (!empty($value)) { // Only insert non-empty values
+                $query = "INSERT INTO test_result_details (TestResultID, Attribute, Value) VALUES (?, ?, ?)";
+                $stmt = $conn->prepare($query);
+                $stmt->bind_param('iss', $test_result_id, $attribute, $value);
+                $stmt->execute();
+            }
+        }
+
+        echo "<p>Test results saved successfully!</p>";
     }
 }
 ?>
@@ -64,6 +57,91 @@ if ($test_selected) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="Userpage.css">
     <title>OHMS - Staff Portal</title>
+    <script>
+        // JavaScript to dynamically generate form fields based on test type
+        function generateTestFields() {
+            var testType = document.getElementById('TestType').value;
+            var resultsDiv = document.getElementById('TestResults');
+            resultsDiv.innerHTML = ''; // Clear previous inputs
+
+            var testAttributes = [];
+            switch (testType) {
+                case 'Routine Hematology':
+                    testAttributes = ['Hemoglobin Level (g/dL)', 'WBC Count (cells/mcL)', 'Platelet Count (cells/mcL)'];
+                    break;
+                case 'Coagulation':
+                    testAttributes = ['PT (sec)', 'INR', 'APTT (sec)'];
+                    break;
+                case 'Routine Chemistry':
+                    testAttributes = ['Glucose (mg/dL)', 'Creatinine (mg/dL)', 'Cholesterol (mg/dL)', 'Electrolytes (mmol/L)'];
+                    break;
+                case 'Renal Function':
+                    testAttributes = ['eGFR (mL/min/1.73m2)', 'BUN (mg/dL)', 'Creatinine (mg/dL)'];
+                    break;
+                case 'Liver Function':
+                    testAttributes = ['AST (U/L)', 'ALT (U/L)', 'Bilirubin (mg/dL)'];
+                    break;
+                case 'Pancreas Function':
+                    testAttributes = ['Amylase (U/L)', 'Lipase (U/L)'];
+                    break;
+                case 'Endocrinology':
+                    testAttributes = ['TSH (mU/L)', 'Free T4 (ng/dL)', 'Free T3 (pg/mL)'];
+                    break;
+                case 'Tumor Markers':
+                    testAttributes = ['CA-125 (U/mL)', 'PSA (ng/mL)', 'AFP (ng/mL)'];
+                    break;
+                case 'ECG':
+                    testAttributes = ['Heart Rate (bpm)', 'ECG Findings'];
+                    break;
+                case 'X-Ray':
+                    testAttributes = ['Findings (Description)', 'Location'];
+                    break;
+                case 'CT Scan':
+                    testAttributes = ['Findings (Description)', 'Location', 'Scan Type'];
+                    break;
+                case 'Ultrasound':
+                    testAttributes = ['Findings (Description)', 'Location', 'Scan Type'];
+                    break;
+                default:
+                    testAttributes = [];
+            }
+
+            // Generate a table with headings and input fields for each attribute
+            var table = document.createElement('table');
+            var thead = document.createElement('thead');
+            var tbody = document.createElement('tbody');
+            var headerRow = document.createElement('tr');
+
+            // Add table headers
+            var headers = ['Test Attribute', 'Input Value'];
+            headers.forEach(function(header) {
+                var th = document.createElement('th');
+                th.textContent = header;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            // Add table rows for each attribute
+            testAttributes.forEach(function(attribute) {
+                var row = document.createElement('tr');
+                var td1 = document.createElement('td');
+                td1.textContent = attribute;
+                var td2 = document.createElement('td');
+                var input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'TestResults[' + attribute + ']';
+                input.id = attribute;
+                td2.appendChild(input);
+                row.appendChild(td1);
+                row.appendChild(td2);
+                tbody.appendChild(row);
+            });
+
+            table.appendChild(tbody);
+            resultsDiv.appendChild(table);
+        }
+    </script>
 </head>
 <body>
 <header>
@@ -86,82 +164,52 @@ if ($test_selected) {
             <section id="CreateTestResults">
                 <h2>Create Test Results</h2>
 
-                <?php if ($patient_selected): ?>
-                    <?php
-                    // Fetch patient details
-                    $query = "SELECT PatientID, CONCAT(Firstname, ' ', Lastname) AS FullName FROM patient WHERE PatientID = ?";
-                    $stmt = $conn->prepare($query);
-                    $stmt->bind_param('s', $patient_selected);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    $patient = $result->fetch_assoc();
+                <form method="POST" action="?section=CreateTestResults">
+                    <label for="PatientID">Enter Patient ID: </label>
+                    <input id="PatientID" name="PatientID" type="text" value="<?= htmlspecialchars($patient_selected) ?>" required>
+                    <button type="submit">Search</button>
+                </form>
 
-                    if ($patient): ?>
-                        <form method="POST" action="">
-                            <label for="PatientID">Patient: </label>
-                            <input id="PatientID" name="PatientID" type="text" value="<?= htmlspecialchars($patient['FullName']) ?>" readonly required>
+                <?php
+                // If patient ID is selected and found, display the form for test type selection
+                if ($patient_selected && isset($patient)) {
+                    echo "<h3>Selected Patient: " . htmlspecialchars($patient['FullName']) . "</h3>";
 
-                            <label for="TestType">Test Type</label>
-                            <select id="TestType" name="TestType" required>
-                                <option value="">-- Select Test Type --</option>
-                                <optgroup label="Blood Tests">
-                                    <option value="Routine Hematology">Routine Hematology</option>
-                                    <option value="Coagulation">Coagulation</option>
-                                    <option value="Routine Chemistry">Routine Chemistry</option>
-                                    <option value="Renal Function">Renal Function</option>
-                                    <option value="Liver Function">Liver Function</option>
-                                    <option value="Pancreas Function">Pancreas Function</option>
-                                    <option value="Endocrinology">Endocrinology</option>
-                                    <option value="Tumor Markers">Tumor Markers</option>
-                                </optgroup>
-                                <optgroup label="Imaging Tests">
-                                    <option value="ECG">ECG</option>
-                                    <option value="X-Ray">X-Ray</option>
-                                    <option value="CT Scan">CT Scan</option>
-                                    <option value="Ultrasound">Ultrasound</option>
-                                </optgroup>
-                            </select>
+                    // Display the test type selection
+                    ?>
+                    <form method="POST" action="?section=CreateTestResults" onsubmit="generateTestFields()">
+                        <input type="hidden" name="PatientID" value="<?= htmlspecialchars($patient['PatientID']) ?>">
+                        <label for="TestType">Test Type</label>
+                        <select id="TestType" name="TestType" onchange="generateTestFields()" required>
+                            <option value="">-- Select Test Type --</option>
+                            <option value="Routine Hematology" <?= $test_selected == 'Routine Hematology' ? 'selected' : '' ?>>Routine Hematology</option>
+                            <option value="Coagulation" <?= $test_selected == 'Coagulation' ? 'selected' : '' ?>>Coagulation</option>
+                            <option value="Routine Chemistry" <?= $test_selected == 'Routine Chemistry' ? 'selected' : '' ?>>Routine Chemistry</option>
+                            <option value="Renal Function" <?= $test_selected == 'Renal Function' ? 'selected' : '' ?>>Renal Function</option>
+                            <option value="Liver Function" <?= $test_selected == 'Liver Function' ? 'selected' : '' ?>>Liver Function</option>
+                            <option value="Pancreas Function" <?= $test_selected == 'Pancreas Function' ? 'selected' : '' ?>>Pancreas Function</option>
+                            <option value="Endocrinology" <?= $test_selected == 'Endocrinology' ? 'selected' : '' ?>>Endocrinology</option>
+                            <option value="Tumor Markers" <?= $test_selected == 'Tumor Markers' ? 'selected' : '' ?>>Tumor Markers</option>
+                            <option value="ECG" <?= $test_selected == 'ECG' ? 'selected' : '' ?>>ECG</option>
+                            <option value="X-Ray" <?= $test_selected == 'X-Ray' ? 'selected' : '' ?>>X-Ray</option>
+                            <option value="CT Scan" <?= $test_selected == 'CT Scan' ? 'selected' : '' ?>>CT Scan</option>
+                            <option value="Ultrasound" <?= $test_selected == 'Ultrasound' ? 'selected' : '' ?>>Ultrasound</option>
+                        </select>
 
-                            <button type="submit">Submit</button>
-                        </form>
+                        <div id="TestResults"></div> <!-- Test result inputs will be dynamically added here -->
 
-                        <?php if ($test_selected): ?>
-                            <form method="POST" action="">
-                                <h3>Test Attributes for <?= htmlspecialchars($test_selected) ?></h3>
-                                <?php foreach ($test_attributes as $attribute): ?>
-                                    <label for="<?= htmlspecialchars($attribute) ?>"><?= htmlspecialchars($attribute) ?>:</label>
-                                    <input type="text" id="<?= htmlspecialchars($attribute) ?>" name="<?= htmlspecialchars($attribute) ?>" required><br>
-                                <?php endforeach; ?>
-                                <button type="submit">Save Test Results</button>
-                            </form>
-                        <?php endif; ?>
-
-                    <?php else: ?>
-                        <p>No patient found with the selected ID.</p>
-                    <?php endif; ?>
-
-                <?php else: ?>
-                    <form method="GET" action="" class="searchbar">
-                        <input type="hidden" name="section" value="CreateTestResults">
-                        <label for="search_patient">Search Patient</label>
-                        <input id="search_patient" name="search_patient" type="search" placeholder="Enter Patient ID, First Name, or Last Name" required>
-                        <button type="submit">Search</button>
+                        <button type="submit">Save Test Results</button>
                     </form>
-                <?php endif; ?>
-            </section>
-            <?php
-            break;
+                </section>
+                <?php
+                }
+                break;
 
-        case 'ModifyTestResults':
-            // Modify Test Results logic here
-            break;
-
-        case 'MyProfile':
-            // My Profile logic here
+        default:
+            echo "<h2>Welcome to the OHMS System</h2>";
             break;
     }
     ?>
 </main>
-
 </body>
 </html>
