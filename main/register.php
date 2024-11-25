@@ -82,7 +82,7 @@
                     throw new Exception("Address Insert Error: " . mysqli_error($conn));
                 }
 
-                $insert_query2 = "INSERT INTO Patient (PatientID, Firstname, Lastname, DOB, Sex, AddressID, ContactID) 
+                $insert_query2 = "INSERT INTO Patient (PatientID, UserAccountID, Firstname, Lastname, DOB, Sex, AddressID, ContactID) 
                                   VALUES ('$patientid', '$useraccountid', '$firstname', '$lastname', '$dob', '$sex', '$addressid', '$contactid')";
                 if (!mysqli_query($conn, $insert_query2)) {
                     throw new Exception("Patient Insert Error: " . mysqli_error($conn));
