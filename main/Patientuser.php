@@ -136,33 +136,95 @@ if (mysqli_num_rows($assigned_test_result) > 0) {
             <section id="MyProfile">
                 <h2>My Profile</h2>
                 <?php
-                // Query for patient profile information
-                $profile_query = "SELECT * FROM Patient WHERE PatientID = ?";
-                $stmt_profile = $conn->prepare($profile_query);
-                $stmt_profile->bind_param("i", $current_patient_id);
-                $stmt_profile->execute();
-                $profile_result = $stmt_profile->get_result();
+// Existing session and configuration checks
+session_start();
+include("php/config.php");
 
-                if ($profile_result && $profile_result->num_rows > 0) {
-                    $profile_row = $profile_result->fetch_assoc();
-                    echo "<p><strong>Name:</strong> " . htmlspecialchars($profile_row['FirstName']) . " " . htmlspecialchars($profile_row['LastName']) . "</p>";
-                    echo "<p><strong>Date of Birth:</strong> " . htmlspecialchars($profile_row['DateOfBirth']) . "</p>";
-                    echo "<p><strong>Gender:</strong> " . htmlspecialchars($profile_row['Gender']) . "</p>";
-                    echo "<p><strong>Contact Info:</strong> " . htmlspecialchars($profile_row['ContactNumber']) . "</p>";
-                } else {
-                    echo "<p>No profile data available.</p>";
-                }
-                ?>
-            </section>
-            <?php
-            break;
+if (!isset($_SESSION['PatientID'])) {
+    echo "<p>You are not logged in. Please log in to view your profile.</p>";
+    exit();
+}
 
-        default:
-            ?>
-            <section id="home">
-                <h2>Welcome to your Patient Portal</h2>
-                <p>Here you can view your prescriptions and profile information.</p>
-            </section>
+$current_patient_id = $_SESSION['PatientID']; // Assuming PatientID is stored in session
+?>
+
+<!-- Profile Section -->
+<section id="MyProfile">
+    <h2>My Profile</h2>
+    
+    <?php
+    // Query for patient profile information
+    $profile_query = "SELECT * FROM Patient WHERE PatientID = ?";
+    $stmt_profile = $conn->prepare($profile_query);
+    $stmt_profile->bind_param("i", $current_patient_id);
+    $stmt_profile->execute();
+    $profile_result = $stmt_profile->get_result();
+
+    if ($profile_result && $profile_result->num_rows > 0) {
+        $profile_row = $profile_result->fetch_assoc();
+        ?>
+        <!-- Display Profile Information -->
+        <p><strong>Name:</strong> <span id="profileName"><?= htmlspecialchars($profile_row['FirstName']) . " " . htmlspecialchars($profile_row['LastName']) ?></span></p>
+        <p><strong>Date of Birth:</strong> <span id="profileDOB"><?= htmlspecialchars($profile_row['DateOfBirth']) ?></span></p>
+        <p><strong>Gender:</strong> <span id="profileGender"><?= htmlspecialchars($profile_row['Gender']) ?></span></p>
+        <p><strong>Contact Info:</strong> <span id="profileContact"><?= htmlspecialchars($profile_row['ContactNumber']) ?></span></p>
+        
+        <!-- Modify Profile Button -->
+        <button id="modifyProfileBtn">Modify Details</button>
+        
+        <!-- Modify Profile Form (Initially hidden) -->
+        <form id="modifyProfileForm" style="display:none;" method="POST" action="update_profile.php">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" value="<?= htmlspecialchars($profile_row['FirstName']) ?>"><br>
+            
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" value="<?= htmlspecialchars($profile_row['LastName']) ?>"><br>
+            
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" value="<?= htmlspecialchars($profile_row['DateOfBirth']) ?>"><br>
+            
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender">
+                <option value="Male" <?= $profile_row['Gender'] == 'Male' ? 'selected' : '' ?>>Male</option>
+                <option value="Female" <?= $profile_row['Gender'] == 'Female' ? 'selected' : '' ?>>Female</option>
+                <option value="Other" <?= $profile_row['Gender'] == 'Other' ? 'selected' : '' ?>>Other</option>
+            </select><br>
+            
+            <label for="contactNumber">Contact Info:</label>
+            <input type="text" id="contactNumber" name="contactNumber" value="<?= htmlspecialchars($profile_row['ContactNumber']) ?>"><br>
+            
+            <button type="submit">Save Changes</button>
+            <button type="button" id="cancelModifyBtn">Cancel</button>
+        </form>
+
+        <script>
+            // Handle Modify Profile Button click
+            document.getElementById('modifyProfileBtn').addEventListener('click', function() {
+                // Hide profile info and show modify form
+                document.querySelectorAll('#profileName, #profileDOB, #profileGender, #profileContact').forEach(function(element) {
+                    element.style.display = 'none';
+                });
+                document.getElementById('modifyProfileForm').style.display = 'block';
+                document.getElementById('modifyProfileBtn').style.display = 'none';
+            });
+
+            // Handle Cancel Modify Button click
+            document.getElementById('cancelModifyBtn').addEventListener('click', function() {
+                // Hide modify form and show profile info
+                document.querySelectorAll('#profileName, #profileDOB, #profileGender, #profileContact').forEach(function(element) {
+                    element.style.display = 'inline';
+                });
+                document.getElementById('modifyProfileForm').style.display = 'none';
+                document.getElementById('modifyProfileBtn').style.display = 'inline';
+            });
+        </script>
+    <?php
+    } else {
+        echo "<p>No profile data available.</p>";
+    }
+    ?>
+</section>
+
             <?php
             break;
     }
