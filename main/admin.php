@@ -257,6 +257,7 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                         throw new Exception("Address Insert Error: " . mysqli_error($conn));
                     }
         
+                    
                     // Insert into Doctor or Staff 
                     if ($usertype === 'Doctor') {
                         $insert_doctor = "INSERT INTO doctor (DoctorID, Firstname, Lastname, DOB, Sex, AddressID, ContactID) 
