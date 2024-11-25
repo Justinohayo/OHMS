@@ -152,7 +152,7 @@ if ($test_selected) {
                     if (isset($_GET['search_patient'])) {
                         $search = mysqli_real_escape_string($conn, $_GET['search_patient']);
                         $query = "
-                            SELECT PatientID, CONCAT(Firstname, ' ', Lastname) AS FullName 
+                            SELECT PatientID, CONCAT(Firstname, Lastname) AS FullName 
                             FROM patient 
                             WHERE PatientID LIKE '%$search%' 
                                OR Firstname LIKE '%$search%' 
