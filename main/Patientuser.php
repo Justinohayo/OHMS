@@ -2,7 +2,6 @@
 session_start();
 include("php/config.php");
 
-
 // Ensure the user is logged in
 if (!isset($_SESSION['userid'])) {
     echo "<p>You are not logged in. Please log in to view your portal.</p>";
@@ -147,13 +146,28 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                 if ($profile_result && $profile_result->num_rows > 0) {
                     $profile_row = $profile_result->fetch_assoc();
                     ?>
-                    <p><strong>Name:</strong> <?= htmlspecialchars($profile_row['Firstname']) . " " . htmlspecialchars($profile_row['Lastname']) ?></p>
-                    <p><strong>Date of Birth:</strong> <?= htmlspecialchars($profile_row['DOB']) ?></p>
-                    <p><strong>Gender:</strong> <?= htmlspecialchars($profile_row['Sex']) ?></p>
-                    <p><strong>Phone:</strong> <?= htmlspecialchars($profile_row['Phone']) ?></p>
-                    <p><strong>Email:</strong> <?= htmlspecialchars($profile_row['Email']) ?></p>
+                    <!-- Profile Details Form -->
+                    <form id="profileForm" method="POST">
+                        <label for="firstName">First Name:</label>
+                        <input type="text" id="firstName" name="firstName" value="<?= htmlspecialchars($profile_row['Firstname']) ?>" readonly><br>
 
-                    <button>Modify Details</button>
+                        <label for="lastName">Last Name:</label>
+                        <input type="text" id="lastName" name="lastName" value="<?= htmlspecialchars($profile_row['Lastname']) ?>" readonly><br>
+
+                        <label for="dob">Date of Birth:</label>
+                        <input type="date" id="dob" name="dob" value="<?= htmlspecialchars($profile_row['DOB']) ?>" readonly><br>
+
+                        <label for="gender">Gender:</label>
+                        <input type="text" id="gender" name="gender" value="<?= htmlspecialchars($profile_row['Sex']) ?>" readonly><br>
+
+                        <label for="phone">Phone:</label>
+                        <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($profile_row['Phone']) ?>" readonly><br>
+
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" value="<?= htmlspecialchars($profile_row['Email']) ?>" readonly><br>
+
+                        <button type="button" id="modifyButton">Modify Details</button>
+                    </form>
 
                     <!-- Modify Profile Form (Initially hidden) -->
                     <form id="modifyProfileForm" style="display:none;" method="POST" action="update_profile.php">
@@ -181,6 +195,14 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
 
                         <input type="submit" value="Save Changes">
                     </form>
+
+                    <script>
+                        // JavaScript to toggle the modify form visibility
+                        document.getElementById("modifyButton").addEventListener("click", function() {
+                            document.getElementById("profileForm").style.display = "none";
+                            document.getElementById("modifyProfileForm").style.display = "block";
+                        });
+                    </script>
                     <?php
                 } else {
                     echo "<p>Profile not found.</p>";
