@@ -23,10 +23,10 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
 <header>
     <p><a href="index.html" class="logo">OHMS</a></p>
     <nav class="user">
-        <a href="?section=home" class="<?= $active_section === 'Home' ? 'active' : '' ?>">Home</a>
+        <a href="?section=home" class="<?= $active_section === 'home' ? 'active' : '' ?>">Home</a>
         <a href="?section=Prescription" class="<?= $active_section === 'Prescription' ? 'active' : '' ?>">Prescription</a>
         <a href="?section=MyProfile" class="<?= $active_section === 'MyProfile' ? 'active' : '' ?>">My Profile</a>
-        <a href="index.html">Logout</a>
+        <a href="logout.php">Logout</a>
         <span></span>
     </nav>
 </header>
@@ -142,91 +142,56 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
             <?php
             break;
 
-        case 'MyProfile':
-            ?>
-            <section id="MyProfile">
-                <h2>My Profile</h2>
-
-                <?php
-                // Query for patient profile information
-                $profile_query = "SELECT p.PatientID, p.Firstname, p.Lastname, p.DOB, p.Sex, c.ContactID, c.Phone, c.Email 
-                                  FROM Patient p
-                                  JOIN Contact c ON p.ContactID = c.ContactID
-                                  WHERE p.PatientID = ?";
-                $stmt_profile = $conn->prepare($profile_query);
-                $stmt_profile->bind_param("i", $current_patient_id);
-                $stmt_profile->execute();
-                $profile_result = $stmt_profile->get_result();
-
-                if ($profile_result && $profile_result->num_rows > 0) {
-                    $profile_row = $profile_result->fetch_assoc();
-                    ?>
-                    <!-- Profile Details Form -->
-                    <form id="profileForm" method="POST">
-                        <label for="firstName">First Name:</label>
-                        <input type="text" id="firstName" name="firstName" value="<?= htmlspecialchars($profile_row['Firstname']) ?>" readonly><br>
-
-                        <label for="lastName">Last Name:</label>
-                        <input type="text" id="lastName" name="lastName" value="<?= htmlspecialchars($profile_row['Lastname']) ?>" readonly><br>
-
-                        <label for="dob">Date of Birth:</label>
-                        <input type="date" id="dob" name="dob" value="<?= htmlspecialchars($profile_row['DOB']) ?>" readonly><br>
-
-                        <label for="gender">Gender:</label>
-                        <input type="text" id="gender" name="gender" value="<?= htmlspecialchars($profile_row['Sex']) ?>" readonly><br>
-
-                        <label for="phone">Phone:</label>
-                        <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($profile_row['Phone']) ?>" readonly><br>
-
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" value="<?= htmlspecialchars($profile_row['Email']) ?>" readonly><br>
-
-                        <button type="button" id="modifyButton">Modify Details</button>
-                    </form>
-
-                    <!-- Modify Profile Form (Initially hidden) -->
-                    <form id="modifyProfileForm" style="display:none;" method="POST" action="update_profile.php">
-                        <label for="firstName">First Name:</label>
-                        <input type="text" id="firstName" name="firstName" value="<?= htmlspecialchars($profile_row['Firstname']) ?>"><br>
-
-                        <label for="lastName">Last Name:</label>
-                        <input type="text" id="lastName" name="lastName" value="<?= htmlspecialchars($profile_row['Lastname']) ?>"><br>
-
-                        <label for="dob">Date of Birth:</label>
-                        <input type="date" id="dob" name="dob" value="<?= htmlspecialchars($profile_row['DOB']) ?>"><br>
-
-                        <label for="gender">Gender:</label>
-                        <select id="gender" name="gender">
-                            <option value="Male" <?= $profile_row['Sex'] == 'Male' ? 'selected' : '' ?>>Male</option>
-                            <option value="Female" <?= $profile_row['Sex'] == 'Female' ? 'selected' : '' ?>>Female</option>
-                            <option value="Other" <?= $profile_row['Sex'] == 'Other' ? 'selected' : '' ?>>Other</option>
-                        </select><br>
-
-                        <label for="phone">Phone:</label>
-                        <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($profile_row['Phone']) ?>"><br>
-
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" value="<?= htmlspecialchars($profile_row['Email']) ?>"><br>
-
-                        <input type="submit" value="Save Changes">
-                    </form>
-
-                    <script>
-                        // JavaScript to toggle the modify form visibility
-                        document.getElementById("modifyButton").addEventListener("click", function() {
-                            document.getElementById("profileForm").style.display = "none";
-                            document.getElementById("modifyProfileForm").style.display = "block";
-                        });
-                    </script>
-                    <?php
-                } else {
-                    echo "<p>Profile not found.</p>";
-                }
+            case 'MyProfile':
                 ?>
-            </section>
-            <?php
-            break;
+                <section id="MyProfile">
+                    <h2>My Profile</h2>
+    
+                    <?php
+                    // Query for patient profile information
+                    $profile_query = "SELECT p.PatientID, p.Firstname, p.Lastname, p.DOB, p.Sex, c.ContactID, c.Phone, c.Email 
+                                      FROM Patient p
+                                      JOIN Contact c ON p.ContactID = c.ContactID
+                                      WHERE p.PatientID = ?";
+                    $stmt_profile = $conn->prepare($profile_query);
+                    $stmt_profile->bind_param("s", $current_patient_id);
+                    $stmt_profile->execute();
+                    $profile_result = $stmt_profile->get_result();
+    
+                    if ($profile_result && $profile_result->num_rows > 0) {
+                        $profile_row = $profile_result->fetch_assoc();
+                        ?>
+                        <form id="profileForm" method="POST">
+                            <label for="firstName">First Name:</label>
+                            <input type="text" id="firstName" name="firstName" value="<?= htmlspecialchars($profile_row['Firstname']) ?>" readonly><br>
+    
+                            <label for="lastName">Last Name:</label>
+                            <input type="text" id="lastName" name="lastName" value="<?= htmlspecialchars($profile_row['Lastname']) ?>" readonly><br>
+    
+                            <label for="dob">Date of Birth:</label>
+                            <input type="date" id="dob" name="dob" value="<?= htmlspecialchars($profile_row['DOB']) ?>" readonly><br>
+    
+                            <label for="gender">Gender:</label>
+                            <input type="text" id="gender" name="gender" value="<?= htmlspecialchars($profile_row['Sex']) ?>" readonly><br>
+    
+                            <label for="phone">Phone:</label>
+                            <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($profile_row['Phone']) ?>" readonly><br>
+    
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" value="<?= htmlspecialchars($profile_row['Email']) ?>" readonly><br>
+    
+                            <button type="button" id="modifyButton">Modify Details</button>
+                        </form>
+                        <?php
+                    } else {
+                        echo "<p>Profile not found. Please contact support.</p>";
+                    }
+                    ?>
+                </section>
+                <?php
+                break;
 
+                
         case 'home':
         default:
             ?>
