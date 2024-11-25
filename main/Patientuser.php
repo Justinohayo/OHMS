@@ -40,14 +40,14 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
         
                 <?php
                 // Query for Assigned Blood Tests for the logged-in patient
-                $blood_test_query = "SELECT * FROM assignedbloodtest WHERE PatientID = ?";
+                $blood_test_query = "SELECT * FROM assignedbloodtest WHERE PatientID = $current_patient_id";
                 $stmt_blood_test = $conn->prepare($blood_test_query);
                 $stmt_blood_test->bind_param("i", $current_patient_id); // Ensure we are selecting tests for the logged-in patient
                 $stmt_blood_test->execute();
                 $blood_test_result = $stmt_blood_test->get_result();
         
                 // Query for Assigned General Tests for the logged-in patient
-                $assigned_test_query = "SELECT * FROM assignedtest WHERE PatientID = ?";
+                $assigned_test_query = "SELECT * FROM assignedtest WHERE PatientID = $current_patient_id";
                 $stmt_assigned_test = $conn->prepare($assigned_test_query);
                 $stmt_assigned_test->bind_param("i", $current_patient_id); // Same here for the general tests
                 $stmt_assigned_test->execute();
