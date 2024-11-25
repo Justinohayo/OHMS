@@ -180,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['TestResults'])) {
         <a href="?section=CreateTestResults" class="<?= $active_section === 'CreateTestResults' ? 'active' : '' ?>">Create Test Results</a>
         <a href="?section=ModifyTestResults" class="<?= $active_section === 'ModifyTestResults' ? 'active' : '' ?>">Modify Test Results</a>
         <a href="?section=MyProfile" class="<?= $active_section === 'MyProfile' ? 'active' : '' ?>">My Profile</a>
-        <a href="logout.php">Logout</a>
+        <a href="index.html">Logout</a>
     </nav>
 </header>
 
