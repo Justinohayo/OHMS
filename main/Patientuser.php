@@ -2,8 +2,34 @@
 session_start();
 include("php/config.php");
 
-// Determine the active section
+// Ensure the user is logged in
+if (!isset($_SESSION['PatientID'])) {
+    echo "<p>You are not logged in. Please log in to view your prescriptions.</p>";
+    exit();
+}
+
+$current_patient_id = $_SESSION['PatientID'];
 $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
+
+// Handle form submission to update profile
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
+    $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
+    $last_name = mysqli_real_escape_string($conn, $_POST['last_name']);
+    $dob = mysqli_real_escape_string($conn, $_POST['dob']);
+    $gender = mysqli_real_escape_string($conn, $_POST['gender']);
+    $contact_number = mysqli_real_escape_string($conn, $_POST['contact_number']);
+
+    // Update the profile in the database
+    $update_query = "UPDATE Patient SET FirstName = ?, LastName = ?, DateOfBirth = ?, Gender = ?, ContactNumber = ? WHERE PatientID = ?";
+    $stmt = $conn->prepare($update_query);
+    $stmt->bind_param("sssssi", $first_name, $last_name, $dob, $gender, $contact_number, $current_patient_id);
+
+    if ($stmt->execute()) {
+        echo "<p>Profile updated successfully!</p>";
+    } else {
+        echo "<p>Failed to update profile. Please try again.</p>";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -11,130 +37,90 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="Userpage.css">
-    <title>OHMS - Doctor Portal</title>
+    <title>OHMS - Patient Portal</title>
 </head>
 <body>
 <header>
     <p><a href="index.html" class="logo">OHMS</a></p>
     <nav class="user">
         <a href="?section=home" class="<?= $active_section === 'home' ? 'active' : '' ?>">Home</a>
-       
         <a href="?section=Prescription" class="<?= $active_section === 'Prescription' ? 'active' : '' ?>">Prescription</a>
         <a href="?section=MyProfile" class="<?= $active_section === 'MyProfile' ? 'active' : '' ?>">My Profile</a>
         <a href="logout.php">Logout</a>
-        <span></span>
     </nav>
 </header>
-
-
 
 <main>
     <?php
     switch ($active_section) {
-       
-            
-        case 'Prescription':
-            ?>
-            <section id="Prescription">
-                <h2>Prescriptions</h2>
-        
-                <?php
-                // Get the currently logged-in patient's ID from the session
-                $current_patient_id = $_SESSION['PatientID'];
-        
-                // Query for Assigned Blood Tests for the logged-in patient
-                $blood_test_query = "SELECT * FROM assignedbloodtest WHERE PatientID = ?";
-                $stmt_blood_test = $conn->prepare($blood_test_query);
-                $stmt_blood_test->bind_param("i", $current_patient_id);
-                $stmt_blood_test->execute();
-                $blood_test_result = $stmt_blood_test->get_result();
-        
-                // Query for Assigned General Tests for the logged-in patient
-                $assigned_test_query = "SELECT * FROM assignedtest WHERE PatientID = ?";
-                $stmt_assigned_test = $conn->prepare($assigned_test_query);
-                $stmt_assigned_test->bind_param("i", $current_patient_id);
-                $stmt_assigned_test->execute();
-                $assigned_test_result = $stmt_assigned_test->get_result();
-        
-                // Display Assigned Blood Tests Table
-                echo "<h3>Assigned Blood Tests</h3>";
-                if ($blood_test_result && $blood_test_result->num_rows > 0) {
-                    echo "<table>
-                            <thead>
-                                <tr>
-                                    <th>AssignedBloodTestID</th>
-                                    <th>PatientID</th>
-                                    <th>DoctorID</th>
-                                    <th>DateAssigned</th>
-                                    <th>BloodTestType</th>
-                                </tr>
-                            </thead>
-                            <tbody>";
-                    while ($row = $blood_test_result->fetch_assoc()) {
-                        echo "<tr>
-                                <td>" . htmlspecialchars($row['AssignedBloodTestID']) . "</td>
-                                <td>" . htmlspecialchars($row['PatientID']) . "</td>
-                                <td>" . htmlspecialchars($row['DoctorID']) . "</td>
-                                <td>" . htmlspecialchars($row['DateAssigned']) . "</td>
-                                <td>" . htmlspecialchars($row['BloodTestType']) . "</td>
-                            </tr>";
-                    }
-                    echo "</tbody></table>";
-                } else {
-                    echo "<p>No blood tests assigned yet.</p>";
-                }
-        
-                // Display Assigned General Tests Table
-                echo "<h3>Assigned General Tests</h3>";
-                if ($assigned_test_result && $assigned_test_result->num_rows > 0) {
-                    echo "<table>
-                            <thead>
-                                <tr>
-                                    <th>AssignedTestID</th>
-                                    <th>PatientID</th>
-                                    <th>DoctorID</th>
-                                    <th>DateAssigned</th>
-                                    <th>TestType</th>
-                                </tr>
-                            </thead>
-                            <tbody>";
-                    while ($row = $assigned_test_result->fetch_assoc()) {
-                        echo "<tr>
-                                <td>" . htmlspecialchars($row['AssignedTestID']) . "</td>
-                                <td>" . htmlspecialchars($row['PatientID']) . "</td>
-                                <td>" . htmlspecialchars($row['DoctorID']) . "</td>
-                                <td>" . htmlspecialchars($row['DateAssigned']) . "</td>
-                                <td>" . htmlspecialchars($row['TestType']) . "</td>
-                            </tr>";
-                    }
-                    echo "</tbody></table>";
-                } else {
-                    echo "<p>No general tests assigned yet.</p>";
-                }
-                ?>
-            </section>
-            <?php
-            break;
-
-
-            
         case 'MyProfile':
             ?>
             <section id="MyProfile">
                 <h2>My Profile</h2>
                 <?php
-                $doctor_id = $_SESSION['PatienID']; // Assuming doctor ID is stored in session
-                $query = "SELECT * FROM doctor WHERE PatienID = '$doctor_id'";
-                $result = mysqli_query($conn, $query);
+                // Query for patient profile information
+                $profile_query = "SELECT * FROM Patient WHERE PatientID = ?";
+                $stmt_profile = $conn->prepare($profile_query);
+                $stmt_profile->bind_param("i", $current_patient_id);
+                $stmt_profile->execute();
+                $profile_result = $stmt_profile->get_result();
 
-                if ($result && mysqli_num_rows($result) > 0) {
-                    $doctor = mysqli_fetch_assoc($result);
-                    echo "<p><strong>Name:</strong> " . htmlspecialchars($patient['Firstname'] . ' ' . $patient['Lastname']) . "</p>";
-                    echo "<p><strong>Email:</strong> " . htmlspecialchars($patient['Email']) . "</p>";
-                    echo "<p><strong>Phone:</strong> " . htmlspecialchars($patient['Phone']) . "</p>";
-                    echo "<p><strong>Specialization:</strong> " . htmlspecialchars($patient['Specialization']) . "</p>";
+                if ($profile_result && $profile_result->num_rows > 0) {
+                    $profile_row = $profile_result->fetch_assoc();
+                    ?>
+                    <!-- Display current profile details -->
+                    <div id="profile-details">
+                        <p><strong>Name:</strong> <?= htmlspecialchars($profile_row['FirstName']) ?> <?= htmlspecialchars($profile_row['LastName']) ?></p>
+                        <p><strong>Date of Birth:</strong> <?= htmlspecialchars($profile_row['DateOfBirth']) ?></p>
+                        <p><strong>Gender:</strong> <?= htmlspecialchars($profile_row['Gender']) ?></p>
+                        <p><strong>Contact Info:</strong> <?= htmlspecialchars($profile_row['ContactNumber']) ?></p>
+
+                        <!-- Modify button -->
+                        <form method="POST" action="?section=MyProfile#edit-profile" id="modify-profile-form">
+                            <button type="submit" name="modify" id="modify-btn">Modify Profile</button>
+                        </form>
+                    </div>
+
+                    <?php
+                    if (isset($_POST['modify'])) {
+                        // Show the editable profile table
+                        ?>
+                        <h3>Edit Profile</h3>
+                        <form method="POST" action="">
+                            <table>
+                                <tr>
+                                    <td><label for="first_name">First Name:</label></td>
+                                    <td><input type="text" name="first_name" value="<?= htmlspecialchars($profile_row['FirstName']) ?>" required></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="last_name">Last Name:</label></td>
+                                    <td><input type="text" name="last_name" value="<?= htmlspecialchars($profile_row['LastName']) ?>" required></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="dob">Date of Birth:</label></td>
+                                    <td><input type="date" name="dob" value="<?= htmlspecialchars($profile_row['DateOfBirth']) ?>" required></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="gender">Gender:</label></td>
+                                    <td>
+                                        <select name="gender" required>
+                                            <option value="Male" <?= ($profile_row['Gender'] === 'Male') ? 'selected' : '' ?>>Male</option>
+                                            <option value="Female" <?= ($profile_row['Gender'] === 'Female') ? 'selected' : '' ?>>Female</option>
+                                            <option value="Other" <?= ($profile_row['Gender'] === 'Other') ? 'selected' : '' ?>>Other</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label for="contact_number">Contact Number:</label></td>
+                                    <td><input type="text" name="contact_number" value="<?= htmlspecialchars($profile_row['ContactNumber']) ?>" required></td>
+                                </tr>
+                            </table>
+                            <button type="submit" name="update_profile">Save Changes</button>
+                        </form>
+                        <?php
+                    }
                 } else {
-                    echo "<p>Profile information not found.</p>";
+                    echo "<p>No profile data available.</p>";
                 }
                 ?>
             </section>
@@ -144,9 +130,11 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
         default:
             ?>
             <section id="home">
-                <h2>Welcome, Patient, to the Online Health Monitor Systxem</h2>
+                <h2>Welcome to your Patient Portal</h2>
+                <p>Here you can view your prescriptions and profile information.</p>
             </section>
             <?php
+            break;
     }
     ?>
 </main>
