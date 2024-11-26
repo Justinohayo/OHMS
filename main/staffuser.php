@@ -298,6 +298,8 @@ case 'MyProfile':
         default:
             echo "<p>Welcome to the Staff Portal</p>";
             break;
+
+            
     }
     ?>
 </main>
