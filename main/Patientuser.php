@@ -55,7 +55,9 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
         <a href="?section=MyProfile" class="<?= $active_section === 'MyProfile' ? 'active' : '' ?>">My Profile</a>
         <a href="?section=Appointment" class="<?= $active_section === 'Appointment' ? 'active' : '' ?>">Appointment</a>
         <a href="index.html">Logout</a>
+        
     </nav>
+    <span> </span>
 </header>
 
 <main>
@@ -272,7 +274,7 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                             echo "<p class='no-appointments'>No upcoming appointments.</p>";
                         }
                         ?>
-                    </div>
+                    </div>  
             
                     <h3 class="appointment-title">Book a New Appointment</h3>
                     <form method="POST" action="?section=Appointment" class="appointment-form">
@@ -289,7 +291,7 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                             <option value="Dr. Alan Brown">Dr. Alan Brown</option>
                         </select>
                         
-                        <button type="submit">Save Changes</button>
+                        <button type="submit">Book Appointment</button>
                     </form>
             
                     <?php
