@@ -53,101 +53,99 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
         <a href="?section=home" class="<?= $active_section === 'home' ? 'active' : '' ?>">Home</a>
         <a href="?section=Prescription" class="<?= $active_section === 'Prescription' ? 'active' : '' ?>">Prescription</a>
         <a href="?section=MyProfile" class="<?= $active_section === 'MyProfile' ? 'active' : '' ?>">My Profile</a>
+        <a href="?section=Appointment" class="<?= $active_section === 'Appointment' ? 'active' : '' ?>">Appointment</a>
         <a href="index.html">Logout</a>
     </nav>
 </header>
 
 <main>
     <?php
-    switch ($active_section)
-    {
-    case 'Prescription':
-        ?>
-        <section id="Prescription">
-            <h2>Prescriptions</h2>
-
-            <?php
-            $search = isset($_GET['search_results']) ? mysqli_real_escape_string($conn, $_GET['search_results']) : '';
-
-            // Queries for prescriptions
-            $blood_test_query = "
-                SELECT abt.AssignedBloodTestID, abt.DoctorID, abt.DateAssigned, abt.BloodTestType 
-                FROM AssignedBloodTest abt
-                WHERE abt.PatientID = '$current_patient_id' AND
-                ('$search' = '' OR abt.BloodTestType LIKE '%$search%' OR abt.DateAssigned LIKE '%$search%')";
-
-            $assigned_test_query = "
-                SELECT at.AssignedTestID, at.DoctorID, at.DateAssigned, at.TestType 
-                FROM AssignedTest at
-                WHERE at.PatientID = '$current_patient_id' AND
-                ('$search' = '' OR at.TestType LIKE '%$search%' OR at.DateAssigned LIKE '%$search%')";
-
-            $blood_test_result = mysqli_query($conn, $blood_test_query);
-            $assigned_test_result = mysqli_query($conn, $assigned_test_query);
+    switch ($active_section) {
+        case 'Prescription':
             ?>
+            <section id="Prescription">
+                <h2>Prescriptions</h2>
 
-            <h3>Assigned Blood Tests</h3>
-            <?php if ($blood_test_result && mysqli_num_rows($blood_test_result) > 0): ?>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Doctor</th>
-                            <th>Date</th>
-                            <th>Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while ($row = mysqli_fetch_assoc($blood_test_result)): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($row['AssignedBloodTestID']) ?></td>
-                                <td><?= htmlspecialchars($row['DoctorID']) ?></td>
-                                <td><?= htmlspecialchars($row['DateAssigned']) ?></td>
-                                <td><?= htmlspecialchars($row['BloodTestType']) ?></td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <p>No blood tests assigned yet.</p>
-            <?php endif; ?>
+                <?php
+                $search = isset($_GET['search_results']) ? mysqli_real_escape_string($conn, $_GET['search_results']) : '';
 
-            <h3>Assigned General Tests</h3>
-            <?php if ($assigned_test_result && mysqli_num_rows($assigned_test_result) > 0): ?>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Doctor</th>
-                            <th>Date</th>
-                            <th>Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while ($row = mysqli_fetch_assoc($assigned_test_result)): ?>
+                // Queries for prescriptions
+                $blood_test_query = "
+                    SELECT abt.AssignedBloodTestID, abt.DoctorID, abt.DateAssigned, abt.BloodTestType 
+                    FROM AssignedBloodTest abt
+                    WHERE abt.PatientID = '$current_patient_id' AND
+                    ('$search' = '' OR abt.BloodTestType LIKE '%$search%' OR abt.DateAssigned LIKE '%$search%')";
+
+                $assigned_test_query = "
+                    SELECT at.AssignedTestID, at.DoctorID, at.DateAssigned, at.TestType 
+                    FROM AssignedTest at
+                    WHERE at.PatientID = '$current_patient_id' AND
+                    ('$search' = '' OR at.TestType LIKE '%$search%' OR at.DateAssigned LIKE '%$search%')";
+
+                $blood_test_result = mysqli_query($conn, $blood_test_query);
+                $assigned_test_result = mysqli_query($conn, $assigned_test_query);
+                ?>
+
+                <h3>Assigned Blood Tests</h3>
+                <?php if ($blood_test_result && mysqli_num_rows($blood_test_result) > 0): ?>
+                    <table>
+                        <thead>
                             <tr>
-                                <td><?= htmlspecialchars($row['AssignedTestID']) ?></td>
-                                <td><?= htmlspecialchars($row['DoctorID']) ?></td>
-                                <td><?= htmlspecialchars($row['DateAssigned']) ?></td>
-                                <td><?= htmlspecialchars($row['TestType']) ?></td>
+                                <th>ID</th>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Type</th>
                             </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <p>No general tests assigned yet.</p>
-            <?php endif; ?>
-        </section>
-        <?php
-        break;
-    
-    
+                        </thead>
+                        <tbody>
+                            <?php while ($row = mysqli_fetch_assoc($blood_test_result)): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($row['AssignedBloodTestID']) ?></td>
+                                    <td><?= htmlspecialchars($row['DoctorID']) ?></td>
+                                    <td><?= htmlspecialchars($row['DateAssigned']) ?></td>
+                                    <td><?= htmlspecialchars($row['BloodTestType']) ?></td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <p>No blood tests assigned yet.</p>
+                <?php endif; ?>
+
+                <h3>Assigned General Tests</h3>
+                <?php if ($assigned_test_result && mysqli_num_rows($assigned_test_result) > 0): ?>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while ($row = mysqli_fetch_assoc($assigned_test_result)): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($row['AssignedTestID']) ?></td>
+                                    <td><?= htmlspecialchars($row['DoctorID']) ?></td>
+                                    <td><?= htmlspecialchars($row['DateAssigned']) ?></td>
+                                    <td><?= htmlspecialchars($row['TestType']) ?></td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <p>No general tests assigned yet.</p>
+                <?php endif; ?>
+            </section>
+            <?php
+            break;
+
         case 'MyProfile':
             ?>
             <section id="MyProfile">
                 <h2>My Profile</h2>
                 <?php
-                // Fetch profile details
                 $profile_query = "
                     SELECT p.Firstname, p.Lastname, p.DOB, p.Sex, c.Phone, c.Email, c.ContactID
                     FROM Patient p
@@ -161,7 +159,6 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
 
                 if ($profile):
                     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'updateProfile') {
-                        // Handle profile update
                         $firstname = htmlspecialchars($_POST['Firstname']);
                         $lastname = htmlspecialchars($_POST['Lastname']);
                         $dob = htmlspecialchars($_POST['DOB']);
@@ -170,7 +167,6 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                         $email = htmlspecialchars($_POST['Email']);
                         $contactID = $profile['ContactID'];
 
-                        // Update queries
                         $update_patient = "UPDATE Patient SET Firstname = ?, Lastname = ?, DOB = ?, Sex = ? WHERE PatientID = ?";
                         $stmt_patient = $conn->prepare($update_patient);
                         $stmt_patient->bind_param('sssss', $firstname, $lastname, $dob, $sex, $current_patient_id);
@@ -186,7 +182,6 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                         }
                     }
                     ?>
-                    <!-- Read-Only Profile Form -->
                     <form id="readOnlyProfileForm" style="display: block;">
                         <label>Firstname:</label>
                         <input type="text" value="<?= htmlspecialchars($profile['Firstname']) ?>" readonly>
@@ -203,7 +198,6 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                         <button type="button" onclick="toggleEditMode()">Update Profile</button>
                     </form>
 
-                    <!-- Editable Profile Form -->
                     <form id="editableProfileForm" method="POST" action="?section=MyProfile" style="display: none;">
                         <input type="hidden" name="action" value="updateProfile">
                         <label>Firstname:</label>
@@ -231,6 +225,95 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
             <?php
             break;
 
+            case 'Appointment':
+                ?>
+                <section id="Appointment" class="page-section active">
+                    <h2 class="appointment-title">Appointments</h2>
+                    <p class="appointment-description">Welcome to the Appointment Section. Here, you can view and manage your appointments.</p>
+            
+                    <h3 class="appointment-title">Upcoming Appointments</h3>
+                    <div class="tablecontainer">
+                        <?php
+                        if (!isset($_SESSION['appointments'])) {
+                            $_SESSION['appointments'] = [
+                                [
+                                    'date' => '2024-12-01',
+                                    'time' => '10:00 AM',
+                                    'doctor' => 'Dr. John Doe',
+                                ],
+                                [
+                                    'date' => '2024-12-15',
+                                    'time' => '2:30 PM',
+                                    'doctor' => 'Dr. Jane Smith',
+                                ],
+                            ];
+                        }
+            
+                        if (!empty($_SESSION['appointments'])) {
+                            echo "<table>
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Doctor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>";
+                            foreach ($_SESSION['appointments'] as $appointment) {
+                                echo "<tr>
+                                        <td>{$appointment['date']}</td>
+                                        <td>{$appointment['time']}</td>
+                                        <td>{$appointment['doctor']}</td>
+                                      </tr>";
+                            }
+                            echo "</tbody>
+                                </table>";
+                        } else {
+                            echo "<p class='no-appointments'>No upcoming appointments.</p>";
+                        }
+                        ?>
+                    </div>
+            
+                    <h3 class="appointment-title">Book a New Appointment</h3>
+                    <form method="POST" action="?section=Appointment" class="appointment-form">
+                        <label for="appointmentDate">Date:</label>
+                        <input type="date" id="appointmentDate" name="appointmentDate" class="patientbar" required>
+                        
+                        <label for="appointmentTime">Time:</label>
+                        <input type="time" id="appointmentTime" name="appointmentTime" class="patientbar" required>
+                        
+                        <label for="doctorName">Doctor:</label>
+                        <select id="doctorName" name="doctorName" class="patientbar" required>
+                            <option value="Dr. John Doe">Dr. John Doe</option>
+                            <option value="Dr. Jane Smith">Dr. Jane Smith</option>
+                            <option value="Dr. Alan Brown">Dr. Alan Brown</option>
+                        </select>
+                        
+                        <button type="submit">Save Changes</button>
+                    </form>
+            
+                    <?php
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitAppointment'])) {
+                        $date = htmlspecialchars($_POST['appointmentDate']);
+                        $time = htmlspecialchars($_POST['appointmentTime']);
+                        $doctor = htmlspecialchars($_POST['doctorName']);
+            
+                        $_SESSION['appointments'][] = [
+                            'date' => $date,
+                            'time' => $time,
+                            'doctor' => $doctor,
+                        ];
+            
+                        echo "<p class='success-message'>Appointment booked successfully!</p>";
+                        echo "<script>location.href='?section=Appointment';</script>";
+                    }
+                    ?>
+                </section>
+                <?php
+                break;
+            
+            
+            
         default:
             ?>
             <section>
