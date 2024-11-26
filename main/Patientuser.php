@@ -55,9 +55,9 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
         <a href="?section=MyProfile" class="<?= $active_section === 'MyProfile' ? 'active' : '' ?>">My Profile</a>
         <a href="?section=Appointment" class="<?= $active_section === 'Appointment' ? 'active' : '' ?>">Appointment</a>
         <a href="index.html">Logout</a>
-        
+        <span> </span>
     </nav>
-    <span> </span>
+    
 </header>
 
 <main>
