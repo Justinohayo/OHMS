@@ -198,48 +198,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['TestResults'])) {
                     <button type="submit">Search</button>
                 </form>
 
-                <?php
-                // If patient ID is selected and found, display the form for test type selection
-                if ($patient_selected && isset($patient)) {
-                    echo "<h3>Selected Patient: " . htmlspecialchars($patient['FullName']) . "</h3>";
-                    ?>
-
+                <?php if ($patient_selected && $patient): ?>
+                    <h3>Patient: <?= $patient['FullName'] ?></h3>
                     <form method="POST" action="?section=CreateTestResults">
-                        <input type="hidden" name="PatientID" value="<?= htmlspecialchars($patient_selected) ?>">
-
                         <label for="TestType">Select Test Type: </label>
-                        <select name="TestType" id="TestType" onchange="generateTestFields()" required>
-                            <option value="">--Select--</option>
-                            <option value="Renal Function">Renal Function</option>
-                            <option value="Liver Function">Liver Function</option>
-                            <option value="Routine Hematology">Routine Hematology</option>
-                            <option value="Coagulation">Coagulation</option>
-                            <option value="Routine Chemistry">Routine Chemistry</option>
-                            <option value="Tumor Markers">Tumor Markers</option>
-                            <option value="Endocrinology">Endocrinology</option>
-                            <option value="Pancreas Function">Pancreas Function</option>
-                            <option value="Urine Test">Urine Test</option>
+                        <select id="TestType" name="TestType" onchange="generateTestFields()">
+                            <option value="">--Select Test Type--</option>
+                            <option value="Renal Function" <?= $test_selected == 'Renal Function' ? 'selected' : '' ?>>Renal Function</option>
+                            <option value="Liver Function" <?= $test_selected == 'Liver Function' ? 'selected' : '' ?>>Liver Function</option>
+                            <option value="Routine Hematology" <?= $test_selected == 'Routine Hematology' ? 'selected' : '' ?>>Routine Hematology</option>
+                            <option value="Coagulation" <?= $test_selected == 'Coagulation' ? 'selected' : '' ?>>Coagulation</option>
+                            <option value="Routine Chemistry" <?= $test_selected == 'Routine Chemistry' ? 'selected' : '' ?>>Routine Chemistry</option>
+                            <option value="Tumor Markers" <?= $test_selected == 'Tumor Markers' ? 'selected' : '' ?>>Tumor Markers</option>
+                            <option value="Endocrinology" <?= $test_selected == 'Endocrinology' ? 'selected' : '' ?>>Endocrinology</option>
+                            <option value="Pancreas Function" <?= $test_selected == 'Pancreas Function' ? 'selected' : '' ?>>Pancreas Function</option>
+                            <option value="Urine Test" <?= $test_selected == 'Urine Test' ? 'selected' : '' ?>>Urine Test</option>
                         </select>
-                        
-                        <div id="TestResults"></div>
-
-                        <button type="submit">Save Test Results</button>
+                        <button type="submit">Next</button>
                     </form>
-                    <?php
-                }
-                ?>
+                    <div id="TestResults"></div>
+                    <form method="POST" action="?section=CreateTestResults">
+                        <input type="hidden" name="PatientID" value="<?= $patient_selected ?>">
+                        <input type="hidden" name="TestType" value="<?= $test_selected ?>">
+                        <button type="submit" name="TestResults" value="Save">Save Test Results</button>
+                    </form>
+                <?php endif; ?>
             </section>
-            <?php
-            break;
+            <?php break;
+
+case 'MyProfile':
+    ?>
+    <section id="MyProfile">
+        <h2>My Profile</h2>
+        <?php
+        if (isset($_SESSION['StaffID'])) {
+            // Check if profile update action is triggered
+            if (isset($_POST['action']) && $_POST['action'] === 'updateProfile') {
+                // Sanitize and capture the submitted data
+                $firstname = htmlspecialchars($_POST['Firstname']);
+                $lastname = htmlspecialchars($_POST['Lastname']);
+                $sex = htmlspecialchars($_POST['Sex']);
+                $dob = htmlspecialchars($_POST['DOB']);
+
+                // Update the staff profile in the database
+                $query = "UPDATE staff SET Firstname = ?, Lastname = ?, Sex = ?, DOB = ? WHERE StaffID = ?";
+                $stmt = $conn->prepare($query);
+                $stmt->bind_param('sssss', $firstname, $lastname, $sex, $dob, $_SESSION['StaffID']);
+                if ($stmt->execute()) {
+                    echo "<p>Profile updated successfully!</p>";
+                } else {
+                    echo "<p style='color:red;'>Error updating profile. Please try again.</p>";
+                }
+            }
+
+            // Fetch staff profile details
+            $query = "SELECT Firstname, Lastname, Sex, DOB FROM staff WHERE StaffID = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param('s', $_SESSION['StaffID']);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $staff = $result->fetch_assoc();
+
+            if ($staff) {
+                ?>
+                <form method="POST" action="?section=MyProfile">
+                    <input type="hidden" name="action" value="updateProfile">
+                    <label for="Firstname">Firstname:</label>
+                    <input type="text" name="Firstname" id="Firstname" value="<?= htmlspecialchars($staff['Firstname']) ?>" required>
+
+                    <label for="Lastname">Lastname:</label>
+                    <input type="text" name="Lastname" id="Lastname" value="<?= htmlspecialchars($staff['Lastname']) ?>" required>
+
+                    <label for="Sex">Sex:</label>
+                    <select name="Sex" id="Sex" required>
+                        <option value="Male" <?= $staff['Sex'] === 'Male' ? 'selected' : '' ?>>Male</option>
+                        <option value="Female" <?= $staff['Sex'] === 'Female' ? 'selected' : '' ?>>Female</option>
+                        <option value="Other" <?= $staff['Sex'] === 'Other' ? 'selected' : '' ?>>Other</option>
+                    </select>
+
+                    <label for="DOB">Date of Birth:</label>
+                    <input type="date" name="DOB" id="DOB" value="<?= htmlspecialchars($staff['DOB']) ?>" required>
+
+                    <button type="submit">Update Profile</button>
+                </form>
+                <?php
+            } else {
+                echo "<p>Unable to fetch your profile details. Please contact the administrator.</p>";
+            }
+        } else {
+            echo "<p>You are not logged in. Please log in to view your profile.</p>";
+        }
+        ?>
+    </section>
+    <?php
+    break;
+
+
         default:
-            echo "<h1>Welcome to the OHMS System</h1>";
+            echo "<p>Welcome to the Staff Portal</p>";
             break;
     }
     ?>
 </main>
-
-<footer>
-    <p>&copy; 2024 OHMS. All Rights Reserved.</p>
-</footer>
 </body>
 </html>
