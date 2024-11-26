@@ -200,6 +200,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['TestResults'])) {
 
                 <?php if ($patient_selected && $patient): ?>
                     <h3>Patient: <?= $patient['FullName'] ?></h3>
+                <?php if ($patient_selected && $patient): ?>
+                    <h3>Patient: <?= $patient['FullName'] ?></h3>
                     <form method="POST" action="?section=CreateTestResults">
                         <label for="TestType">Select Test Type: </label>
                         <select id="TestType" name="TestType" onchange="generateTestFields()">
@@ -213,7 +215,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['TestResults'])) {
                             <option value="Endocrinology" <?= $test_selected == 'Endocrinology' ? 'selected' : '' ?>>Endocrinology</option>
                             <option value="Pancreas Function" <?= $test_selected == 'Pancreas Function' ? 'selected' : '' ?>>Pancreas Function</option>
                             <option value="Urine Test" <?= $test_selected == 'Urine Test' ? 'selected' : '' ?>>Urine Test</option>
+                        <select id="TestType" name="TestType" onchange="generateTestFields()">
+                            <option value="">--Select Test Type--</option>
+                            <option value="Renal Function" <?= $test_selected == 'Renal Function' ? 'selected' : '' ?>>Renal Function</option>
+                            <option value="Liver Function" <?= $test_selected == 'Liver Function' ? 'selected' : '' ?>>Liver Function</option>
+                            <option value="Routine Hematology" <?= $test_selected == 'Routine Hematology' ? 'selected' : '' ?>>Routine Hematology</option>
+                            <option value="Coagulation" <?= $test_selected == 'Coagulation' ? 'selected' : '' ?>>Coagulation</option>
+                            <option value="Routine Chemistry" <?= $test_selected == 'Routine Chemistry' ? 'selected' : '' ?>>Routine Chemistry</option>
+                            <option value="Tumor Markers" <?= $test_selected == 'Tumor Markers' ? 'selected' : '' ?>>Tumor Markers</option>
+                            <option value="Endocrinology" <?= $test_selected == 'Endocrinology' ? 'selected' : '' ?>>Endocrinology</option>
+                            <option value="Pancreas Function" <?= $test_selected == 'Pancreas Function' ? 'selected' : '' ?>>Pancreas Function</option>
+                            <option value="Urine Test" <?= $test_selected == 'Urine Test' ? 'selected' : '' ?>>Urine Test</option>
                         </select>
+                        <button type="submit">Next</button>
+                    </form>
+                    <div id="TestResults"></div>
+                    <form method="POST" action="?section=CreateTestResults">
+                        <input type="hidden" name="PatientID" value="<?= $patient_selected ?>">
+                        <input type="hidden" name="TestType" value="<?= $test_selected ?>">
+                        <button type="submit" name="TestResults" value="Save">Save Test Results</button>
                         <button type="submit">Next</button>
                     </form>
                     <div id="TestResults"></div>
@@ -295,6 +315,7 @@ case 'MyProfile':
 
 
         default:
+            echo "<p>Welcome to the Staff Portal</p>";
             echo "<p>Welcome to the Staff Portal</p>";
             break;
     }
