@@ -3,12 +3,32 @@ session_start();
 include("php/config.php");
 
 // Ensure the user is logged in
-if (!isset($_SESSION['userid'])) {
+if (!isset($_SESSION['userid'])) 
+{
     echo "<p>You are not logged in. Please log in to view your portal.</p>";
     exit();
 }
 
-$current_patient_id = $_SESSION['PatientID']; // This should hold the logged-in patient's ID
+// Store the current UserAccountID in a variable
+$useraccountID = $_SESSION['userid']; // User ID from the session
+
+// Query to retrieve the PatientID using the UserAccountID
+$patient_query = "SELECT PatientID FROM Patient WHERE UserAccountID = ?";
+$stmt = $conn->prepare($patient_query);
+$stmt->bind_param("s", $useraccountID);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result && $result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $current_patient_id = $row['PatientID']; // Store the PatientID
+} else 
+{
+    echo "<p>Unable to retrieve PatientID. Please contact support.</p>";
+    exit();
+}
+
+// Determine the active section of the patient portal
 $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
 ?>
 
@@ -27,7 +47,6 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
         <a href="?section=Prescription" class="<?= $active_section === 'Prescription' ? 'active' : '' ?>">Prescription</a>
         <a href="?section=MyProfile" class="<?= $active_section === 'MyProfile' ? 'active' : '' ?>">My Profile</a>
         <a href="logout.php">Logout</a>
-        <span></span>
     </nav>
 </header>
 
@@ -39,105 +58,77 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
             <section id="Prescription">
                 <h2>Prescriptions</h2>
 
-                <!-- Search Functionality -->
-                <form role="search" method="GET" class="searchbar">
-                    <input type="hidden" name="section" value="Prescription">
-                    <label for="search_results">Search Results</label>
-                    <input id="search_results" name="search_results" type="search" placeholder="Search by test type or date..." autofocus required>
-                    <button type="submit">Go</button>
-                </form>
-
                 <?php
-                if (isset($_GET['search_results'])) {
-                    $search = mysqli_real_escape_string($conn, $_GET['search_results']);
-                    $blood_test_query = "
-                        SELECT abt.AssignedBloodTestID, p.Firstname, p.Lastname, abt.DoctorID, abt.DateAssigned, abt.BloodTestType 
-                        FROM assignedbloodtest abt
-                        JOIN Patient p ON abt.PatientID = p.PatientID
-                        WHERE abt.PatientID = '$current_patient_id' AND (abt.BloodTestType LIKE '%$search%' OR abt.DateAssigned LIKE '%$search%')";
+                $search = isset($_GET['search_results']) ? mysqli_real_escape_string($conn, $_GET['search_results']) : '';
 
-                    $assigned_test_query = "
-                        SELECT at.AssignedTestID, p.Firstname, p.Lastname, at.DoctorID, at.DateAssigned, at.TestType 
-                        FROM assignedtest at
-                        JOIN Patient p ON at.PatientID = p.PatientID
-                        WHERE at.PatientID = '$current_patient_id' AND (at.TestType LIKE '%$search%' OR at.DateAssigned LIKE '%$search%')";
-                } else {
-                    $blood_test_query = "
-                        SELECT abt.AssignedBloodTestID, p.Firstname, p.Lastname, abt.DoctorID, abt.DateAssigned, abt.BloodTestType 
-                        FROM assignedbloodtest abt
-                        JOIN Patient p ON abt.PatientID = p.PatientID
-                        WHERE abt.PatientID = '$current_patient_id'";
+                // Queries for prescriptions
+                $blood_test_query = "
+                    SELECT abt.AssignedBloodTestID, abt.DoctorID, abt.DateAssigned, abt.BloodTestType 
+                    FROM AssignedBloodTest abt
+                    WHERE abt.PatientID = '$current_patient_id' AND
+                    ('$search' = '' OR abt.BloodTestType LIKE '%$search%' OR abt.DateAssigned LIKE '%$search%')";
 
-                    $assigned_test_query = "
-                        SELECT at.AssignedTestID, p.Firstname, p.Lastname, at.DoctorID, at.DateAssigned, at.TestType 
-                        FROM assignedtest at
-                        JOIN Patient p ON at.PatientID = p.PatientID
-                        WHERE at.PatientID = '$current_patient_id'";
-                }
+                $assigned_test_query = "
+                    SELECT at.AssignedTestID, at.DoctorID, at.DateAssigned, at.TestType 
+                    FROM AssignedTest at
+                    WHERE at.PatientID = '$current_patient_id' AND
+                    ('$search' = '' OR at.TestType LIKE '%$search%' OR at.DateAssigned LIKE '%$search%')";
 
                 $blood_test_result = mysqli_query($conn, $blood_test_query);
                 $assigned_test_result = mysqli_query($conn, $assigned_test_query);
                 ?>
 
-                <!-- Display Assigned Blood Tests -->
                 <h3>Assigned Blood Tests</h3>
-                <?php
-                if ($blood_test_result && mysqli_num_rows($blood_test_result) > 0) {
-                    echo "<table>
-                            <thead>
+                <?php if ($blood_test_result && mysqli_num_rows($blood_test_result) > 0): ?>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while ($row = mysqli_fetch_assoc($blood_test_result)): ?>
                                 <tr>
-                                    <th>AssignedBloodTestID</th>
-                                    <th>Patient Name</th>
-                                    <th>DoctorID</th>
-                                    <th>DateAssigned</th>
-                                    <th>BloodTestType</th>
+                                    <td><?= htmlspecialchars($row['AssignedBloodTestID']) ?></td>
+                                    <td><?= htmlspecialchars($row['DoctorID']) ?></td>
+                                    <td><?= htmlspecialchars($row['DateAssigned']) ?></td>
+                                    <td><?= htmlspecialchars($row['BloodTestType']) ?></td>
                                 </tr>
-                            </thead>
-                            <tbody>";
-                    while ($row = mysqli_fetch_assoc($blood_test_result)) {
-                        echo "<tr>
-                                <td>" . htmlspecialchars($row['AssignedBloodTestID']) . "</td>
-                                <td>" . htmlspecialchars($row['Firstname']) . " " . htmlspecialchars($row['Lastname']) . "</td>
-                                <td>" . htmlspecialchars($row['DoctorID']) . "</td>
-                                <td>" . htmlspecialchars($row['DateAssigned']) . "</td>
-                                <td>" . htmlspecialchars($row['BloodTestType']) . "</td>
-                            </tr>";
-                    }
-                    echo "</tbody></table>";
-                } else {
-                    echo "<p>No blood tests assigned yet.</p>";
-                }
-                ?>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <p>No blood tests assigned yet.</p>
+                <?php endif; ?>
 
-                <!-- Display Assigned General Tests -->
                 <h3>Assigned General Tests</h3>
-                <?php
-                if ($assigned_test_result && mysqli_num_rows($assigned_test_result) > 0) {
-                    echo "<table>
-                            <thead>
+                <?php if ($assigned_test_result && mysqli_num_rows($assigned_test_result) > 0): ?>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while ($row = mysqli_fetch_assoc($assigned_test_result)): ?>
                                 <tr>
-                                    <th>AssignedTestID</th>
-                                    <th>Patient Name</th>
-                                    <th>DoctorID</th>
-                                    <th>DateAssigned</th>
-                                    <th>TestType</th>
+                                    <td><?= htmlspecialchars($row['AssignedTestID']) ?></td>
+                                    <td><?= htmlspecialchars($row['DoctorID']) ?></td>
+                                    <td><?= htmlspecialchars($row['DateAssigned']) ?></td>
+                                    <td><?= htmlspecialchars($row['TestType']) ?></td>
                                 </tr>
-                            </thead>
-                            <tbody>";
-                    while ($row = mysqli_fetch_assoc($assigned_test_result)) {
-                        echo "<tr>
-                                <td>" . htmlspecialchars($row['AssignedTestID']) . "</td>
-                                <td>" . htmlspecialchars($row['Firstname']) . " " . htmlspecialchars($row['Lastname']) . "</td>
-                                <td>" . htmlspecialchars($row['DoctorID']) . "</td>
-                                <td>" . htmlspecialchars($row['DateAssigned']) . "</td>
-                                <td>" . htmlspecialchars($row['TestType']) . "</td>
-                            </tr>";
-                    }
-                    echo "</tbody></table>";
-                } else {
-                    echo "<p>No general tests assigned yet.</p>";
-                }
-                ?>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <p>No general tests assigned yet.</p>
+                <?php endif; ?>
             </section>
             <?php
             break;
@@ -146,53 +137,78 @@ $active_section = isset($_GET['section']) ? $_GET['section'] : 'home';
                 ?>
                 <section id="MyProfile">
                     <h2>My Profile</h2>
-    
+            
                     <?php
-                    // Query for patient profile information
-                    $profile_query = "SELECT p.PatientID, p.Firstname, p.Lastname, p.DOB, p.Sex, c.ContactID, c.Phone, c.Email 
-                                      FROM Patient p
-                                      JOIN Contact c ON p.ContactID = c.ContactID
-                                      WHERE p.PatientID = ?";
-                    $stmt_profile = $conn->prepare($profile_query);
-                    $stmt_profile->bind_param("s", $current_patient_id);
-                    $stmt_profile->execute();
-                    $profile_result = $stmt_profile->get_result();
-    
-                    if ($profile_result && $profile_result->num_rows > 0) {
-                        $profile_row = $profile_result->fetch_assoc();
+                    // Query to fetch profile data
+                    $profile_query = "
+                        SELECT p.Firstname, p.Lastname, p.DOB, p.Sex, c.Phone, c.Email
+                        FROM Patient p
+                        JOIN Contact c ON p.ContactID = c.ContactID
+                        WHERE p.PatientID = ?";
+                    $stmt = $conn->prepare($profile_query);
+                    $stmt->bind_param("s", $current_patient_id);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+            
+                    if ($result && $result->num_rows > 0):
+                        $profile = $result->fetch_assoc();
                         ?>
-                        <form id="profileForm" method="POST">
-                            <label for="firstName">First Name:</label>
-                            <input type="text" id="firstName" name="firstName" value="<?= htmlspecialchars($profile_row['Firstname']) ?>" readonly><br>
-    
-                            <label for="lastName">Last Name:</label>
-                            <input type="text" id="lastName" name="lastName" value="<?= htmlspecialchars($profile_row['Lastname']) ?>" readonly><br>
-    
-                            <label for="dob">Date of Birth:</label>
-                            <input type="date" id="dob" name="dob" value="<?= htmlspecialchars($profile_row['DOB']) ?>" readonly><br>
-    
-                            <label for="gender">Gender:</label>
-                            <input type="text" id="gender" name="gender" value="<?= htmlspecialchars($profile_row['Sex']) ?>" readonly><br>
-    
-                            <label for="phone">Phone:</label>
-                            <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($profile_row['Phone']) ?>" readonly><br>
-    
-                            <label for="email">Email:</label>
-                            <input type="email" id="email" name="email" value="<?= htmlspecialchars($profile_row['Email']) ?>" readonly><br>
-    
+                        <!-- Read-Only Profile Form -->
+                        <form id="profileForm" method="POST" style="display: block;">
+                            <label>First Name:</label>
+                            <input type="text" value="<?= htmlspecialchars($profile['Firstname']) ?>" readonly>
+                            <label>Last Name:</label>
+                            <input type="text" value="<?= htmlspecialchars($profile['Lastname']) ?>" readonly>
+                            <label>Date of Birth:</label>
+                            <input type="date" value="<?= htmlspecialchars($profile['DOB']) ?>" readonly>
+                            <label>Gender:</label>
+                            <input type="text" value="<?= htmlspecialchars($profile['Sex']) ?>" readonly>
+                            <label>Phone:</label>
+                            <input type="text" value="<?= htmlspecialchars($profile['Phone']) ?>" readonly>
+                            <label>Email:</label>
+                            <input type="email" value="<?= htmlspecialchars($profile['Email']) ?>" readonly>
                             <button type="button" id="modifyButton">Modify Details</button>
                         </form>
-                        <?php
-                    } else {
-                        echo "<p>Profile not found. Please contact support.</p>";
-                    }
-                    ?>
+            
+                        <!-- Editable Profile Form -->
+                        <form id="modifyProfileForm" method="POST" action="update_profile.php" style="display: none;">
+    <label>First Name:</label>
+    <input type="text" name="firstName" value="<?= htmlspecialchars($profile['Firstname']) ?>" required>
+    <label>Last Name:</label>
+    <input type="text" name="lastName" value="<?= htmlspecialchars($profile['Lastname']) ?>" required>
+    <label>Date of Birth:</label>
+    <input type="date" name="dob" value="<?= htmlspecialchars($profile['DOB']) ?>" required>
+    <label>Gender:</label>
+    <select name="gender" required>
+        <option value="Male" <?= $profile['Sex'] === 'Male' ? 'selected' : '' ?>>Male</option>
+        <option value="Female" <?= $profile['Sex'] === 'Female' ? 'selected' : '' ?>>Female</option>
+        <option value="Other" <?= $profile['Sex'] === 'Other' ? 'selected' : '' ?>>Other</option>
+    </select>
+    <label>Phone:</label>
+    <input type="text" name="phone" value="<?= htmlspecialchars($profile['Phone']) ?>" required>
+    <label>Email:</label>
+    <input type="email" name="email" value="<?= htmlspecialchars($profile['Email']) ?>" required>
+    <button type="submit">Save Changes</button>
+</form>
+
+
+
+            
+                        <script>
+                            // JavaScript to toggle between read-only and editable forms
+                            document.getElementById("modifyButton").addEventListener("click", function () {
+                                document.getElementById("profileForm").style.display = "none";
+                                document.getElementById("modifyProfileForm").style.display = "block";
+                            });
+                        </script>
+                    <?php else: ?>
+                        <p>Profile not found.</p>
+                    <?php endif; ?>
                 </section>
                 <?php
                 break;
+            
 
-                
-        case 'home':
         default:
             ?>
             <section>
